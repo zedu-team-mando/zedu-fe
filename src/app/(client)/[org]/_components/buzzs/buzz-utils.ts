@@ -8,7 +8,9 @@ export const formatBuzzDuration = (
 ) => {
   if (!startedAt) return "";
 
-  if (status === "active" && !endedAt) {
+  // The API sends a planned ended_at (start + 2 hours) for live buzzes,
+  // so it can't be used as the duration until the buzz has really ended.
+  if ((status || "").toLowerCase() === "active") {
     return "In progress";
   }
 
