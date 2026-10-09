@@ -148,8 +148,10 @@ export const VoiceThumbnails = ({
         </div>
 
         <button
+          type="button"
+          aria-label="Remove voice message"
           onClick={removeVoice}
-          className="absolute -top-2 -right-2 p-1 bg-gray-500 text-white rounded-full w-5 h-5 text-xs hidden group-hover:flex items-center justify-center"
+          className="absolute -top-2 -right-2 p-1 bg-gray-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
         >
           <XIcon size={14} />
         </button>
