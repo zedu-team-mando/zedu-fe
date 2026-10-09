@@ -88,21 +88,14 @@ export function uiAvatarUrl(name: string): string {
   return `${readEnv("NEXT_PUBLIC_UI_AVATARS_URL")}?name=${encodeURIComponent(name)}`;
 }
 
-export function facebookUrl(): string {
-  return "https://facebook.com/zedu.chat";
-}
-
-export function instagramUrl(): string {
-  return "https://instagram.com/zedu.chat";
-}
-
-export function tiktokUrl(): string {
-  return "https://tiktok.com/@zedu.chat";
-}
-
-export function xUrl(): string {
-  return "https://x.com/zedu.chat";
-}
+export const SOCIAL_URLS = {
+  facebook:
+    process.env.NEXT_PUBLIC_FACEBOOK_URL || "https://facebook.com/zedu.chat",
+  instagram:
+    process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com/zedu.chat",
+  tiktok: process.env.NEXT_PUBLIC_TIKTOK_URL || "https://tiktok.com/@zedu.chat",
+  x: process.env.NEXT_PUBLIC_TWITTER_URL || "https://x.com/zedu.chat",
+};
 
 /** npm package root for emoji-datasource-apple (no trailing slash). */
 export function appleEmojiDatasourceBaseUrl(): string {

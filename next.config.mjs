@@ -48,23 +48,22 @@ const nextConfig = {
     return [
       {
         source: "/instagram",
-        destination: "https://instagram.com/telex.im",
+        destination: "https://instagram.com/zedu.chat",
         permanent: false,
       },
       {
         source: "/tiktok",
-        destination: "https://tiktok.com/@telexim",
+        destination: "https://tiktok.com/@zedu.chat",
         permanent: false,
       },
       {
         source: "/facebook",
-        destination:
-          "https://www.facebook.com/share/1CyRjZC3rz/?mibextid=wwXIfr",
+        destination: "https://facebook.com/zedu.chat",
         permanent: false,
       },
       {
         source: "/x",
-        destination: "https://x.com/teleximapp",
+        destination: "https://x.com/zedu.chat",
         permanent: false,
       },
     ];
