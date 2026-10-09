@@ -45,12 +45,18 @@ export const GuideResourceCard = ({
           </p>
         </div>
 
-        <Link
-          href={link}
-          className="inline-flex items-center gap-2 text-sm font-medium text-primary-500 hover:text-primary-600 transition-colors mt-3"
-        >
-          Read article <ArrowRight size={16} />
-        </Link>
+        {link === "#" ? (
+          <span className="inline-flex items-center gap-2 text-sm font-medium text-neutral-500 mt-3">
+            Coming soon
+          </span>
+        ) : (
+          <Link
+            href={link}
+            className="inline-flex items-center gap-2 text-sm font-medium text-primary-500 hover:text-primary-600 transition-colors mt-3"
+          >
+            Read article <ArrowRight size={16} />
+          </Link>
+        )}
       </div>
     </div>
   );
