@@ -16,7 +16,7 @@ export default async function FlamingoBoardPage() {
           </div>
 
           <h1 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-5xl">
-            Contributors Board
+            Flamingo Contributors Board
           </h1>
           <p className="mx-auto max-w-2xl text-sm text-neutral-600 sm:text-base">
             Everyone contributing to the Zedu Flamingo project.

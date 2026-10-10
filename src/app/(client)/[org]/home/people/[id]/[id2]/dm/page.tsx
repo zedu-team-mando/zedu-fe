@@ -23,6 +23,13 @@ import ConversationSearchSidebar, {
   getConversationSearchSidebarWidth,
 } from "~/app/(client)/[org]/_components/conversation-search/conversation-search-sidebar";
 
+// Global `participant` is whoever was opened last, so only trust it when it is
+// the person this DM is with.
+const isParticipantOf = (person: any, participantId: string) =>
+  Boolean(person) &&
+  String(person?.user_id ?? person?.id ?? person?.participant_id) ===
+    String(participantId);
+
 const DmPage = () => {
   const { state, dispatch } = useContext(DataContext);
   const { orgId, participant: previewParticipant, user } = state;
@@ -34,10 +41,15 @@ const DmPage = () => {
   const id = params.id as string;
   const id2 = params.id2 as string;
   const { fetchMoreData, hasMore } = UsePeopleReply();
+  const activeParticipant = isParticipantOf(previewParticipant, id2)
+    ? previewParticipant
+    : participant;
 
   // get the participant infor
   useEffect(() => {
-    setParticipant(previewParticipant);
+    setParticipant(
+      isParticipantOf(previewParticipant, id2) ? previewParticipant : null
+    );
     const getUser = async () => {
       const res = await GetRequest(
         `/organisations/${orgId}/dms/participants/${id}`
@@ -169,15 +181,15 @@ const DmPage = () => {
         )}
         style={{ marginRight: `${totalSidePanelWidth}px` }}
       >
-        <PeopleHeader user={previewParticipant || participant} />
+        <PeopleHeader user={activeParticipant} />
 
         <PeopleMessage
-          participant={previewParticipant || participant}
+          participant={activeParticipant}
           setShowProfile={setShowProfile}
           showProfile={showProfile}
         />
 
-        {isUserDeactivated(previewParticipant || participant) ? (
+        {isUserDeactivated(activeParticipant) ? (
           <div className="absolute bottom-0 left-0 right-[17px] border-t border-[#E6EAEF] bg-[#F8F8F8] px-5 py-4 text-sm text-[#616061]">
             This person is deactivated and can no longer receive messages.
           </div>
@@ -207,7 +219,7 @@ const DmPage = () => {
         {/* Profile Sidebar */}
         {state?.showProfile && isSmUp && (
           <div className="w-[408px] h-full bg-white border-l border-[#E6EAEF]">
-            <ProfileSidebar user={previewParticipant || participant} />
+            <ProfileSidebar user={activeParticipant} />
           </div>
         )}
 
@@ -236,9 +248,7 @@ const DmPage = () => {
 
         <ConversationSearchSidebar
           channelId={id}
-          conversationLabel={
-            previewParticipant?.username || participant?.username
-          }
+          conversationLabel={activeParticipant?.username}
         />
       </div>
     </div>

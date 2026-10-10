@@ -11,7 +11,7 @@ export const zeduOspreyContributors: Contributor[] = [
   { name: "Adesua Benita", username: "Susu" },
   { name: "Adewale Abdul-Lateef Odukoya", username: "Adewale.py" },
   { name: "Ajayi Daniel", username: "Dahak" },
-  { name: "Aliu Kamalideen Usman", username: "uthman tech" },
+  { name: "Aliu Kamalideen Usman", username: "Admiral_上将" },
   { name: "Avi", username: "Avi" },
   { name: "Bahir Momodu", username: "BAGHIRA" },
   { name: "Ctrlf-codex", username: "CtrlF" },

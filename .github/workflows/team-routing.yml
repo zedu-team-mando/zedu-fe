@@ -27,4 +27,4 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    uses: zedu-hng/zedu-ci/.github/workflows/team-routing.yml@fac7608447c2fd4f4b85e8b5c295a754bbf1d40a
+    uses: zedu-hng/zedu-ci/.github/workflows/team-routing.yml@ed2c2cdb27717ae5fa31cb45f49dd2f31dc86837

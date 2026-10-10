@@ -6,7 +6,7 @@ export type Contributor = {
 
 export const contributors: Contributor[] = [
   { name: "Aniyikaye Alabi", handle: "AniyikayeAlabi", role: "Technical lead" },
-  { name: "Benjamin Umoh", handle: "Bennyumoh", role: "Team lead" },
+  { name: "Benjamin Boniface Umoh", handle: "Bennyumoh", role: "Team lead" },
   { name: "Jeremiah Edache", handle: "Jeremiah", role: "Product Manager" },
   { name: "Emmanuel Inyang", handle: "Sir_Nuel", role: "Developer" },
   { name: "George Adaba", handle: "George", role: "Developer" },

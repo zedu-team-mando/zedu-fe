@@ -20,18 +20,29 @@ import { cn } from "~/lib/utils";
 
 //
 
+// Global `participant` is whoever was opened last, so only trust it when it is
+// the person this DM is with.
+const isParticipantOf = (person: any, participantId: string) =>
+  Boolean(person) &&
+  String(person?.user_id ?? person?.id ?? person?.participant_id) ===
+    String(participantId);
+
 const DmPage = () => {
   const { state, dispatch } = useContext(DataContext);
   const { orgId, reply, participant: previewParticipant, user } = state;
   const [participant, setParticipant] = useState<any>(null);
   const params = useParams();
   const id = params.id as string;
+  const id2 = params.id2 as string;
   const { fetchMoreData, hasMore } = UsePeopleReply();
   const isSmUp = useIsSmUp();
+  const activeParticipant = isParticipantOf(previewParticipant, id2)
+    ? previewParticipant
+    : participant;
 
   // get the participant information
   useEffect(() => {
-    setParticipant(previewParticipant);
+    setParticipant(null);
     const getUser = async () => {
       const res = await GetRequest(
         `/organisations/${orgId}/dms/participants/${id}`
@@ -140,10 +151,10 @@ const DmPage = () => {
         className="relative flex flex-col flex-1 transition-[margin] duration-300 ease-in-out"
         style={{ marginRight: `${totalSidePanelWidth}px` }}
       >
-        <PeopleHeader user={previewParticipant || participant} />
+        <PeopleHeader user={activeParticipant} />
 
         <div className="flex-1 flex flex-col relative overflow-hidden">
-          <PeopleMessage participant={previewParticipant || participant} />
+          <PeopleMessage participant={activeParticipant} />
 
           <div className="absolute bottom-0 left-0 right-[17px]">
             <MessageBox
@@ -167,7 +178,7 @@ const DmPage = () => {
         {/* Profile Sidebar */}
         {state?.showProfile && isSmUp && (
           <div className="w-[408px] h-full bg-white border-l border-[#E6EAEF] shadow-[-3px_0px_27px_0px_#DFDFDF]">
-            <ProfileSidebar user={participant} />
+            <ProfileSidebar user={activeParticipant} />
           </div>
         )}
 

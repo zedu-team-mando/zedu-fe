@@ -18,7 +18,7 @@ export const contributors: Contributor[] = [
     name: "Akinremi Oluwatoyin Mary",
     githubUsername: "Oluwatoyin-224",
   },
-  { name: "Babatunde Omojuwa", githubUsername: "juskins" },
+  { name: "Babatunde Omojuwa Kolawole", githubUsername: "juskins" },
   { name: "Bilkis Oladimeji", githubUsername: "Atete22" },
   { name: "Bolakale Fuad", githubUsername: "bolakale6" },
   { name: "Christiana Mabel Nyuma", githubUsername: "Mabel007" },

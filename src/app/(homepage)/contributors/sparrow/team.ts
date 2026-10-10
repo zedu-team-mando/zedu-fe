@@ -86,5 +86,12 @@ export const TEAM: Team = {
       role: "Member",
       field: "Data Analysis",
     },
+    {
+      fullName: "Pearl Koosi Akpaka",
+      zeduUsername: "PearlAkpaka",
+      githubUsername: "pearl-bit-tech",
+      role: "Member",
+      field: "Product Management",
+    },
   ],
 };
