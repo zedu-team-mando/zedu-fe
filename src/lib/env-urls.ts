@@ -26,6 +26,27 @@ export function playStoreUrl(): string {
   return readEnv("NEXT_PUBLIC_PLAY_STORE_URL");
 }
 
+export function facebookUrl(): string {
+  return (
+    readEnv("NEXT_PUBLIC_FACEBOOK_URL") ||
+    "https://www.facebook.com/share/1CyRjZC3rz/?mibextid=wwXIfr"
+  );
+}
+
+export function instagramUrl(): string {
+  return (
+    readEnv("NEXT_PUBLIC_INSTAGRAM_URL") || "https://www.instagram.com/telex.im"
+  );
+}
+
+export function tiktokUrl(): string {
+  return readEnv("NEXT_PUBLIC_TIKTOK_URL") || "https://www.tiktok.com/@telexim";
+}
+
+export function xUrl(): string {
+  return readEnv("NEXT_PUBLIC_TWITTER_URL") || "https://x.com/teleximapp";
+}
+
 export function gtmScriptUrl(): string {
   return readEnv("NEXT_PUBLIC_GTM_SCRIPT_URL");
 }
@@ -88,21 +109,12 @@ export function uiAvatarUrl(name: string): string {
   return `${readEnv("NEXT_PUBLIC_UI_AVATARS_URL")}?name=${encodeURIComponent(name)}`;
 }
 
-export function instagramUrl(): string {
-  return readEnv("NEXT_PUBLIC_INSTAGRAM_URL");
-}
-
-export function tiktokUrl(): string {
-  return readEnv("NEXT_PUBLIC_TIKTOK_URL");
-}
-
-export function facebookUrl(): string {
-  return readEnv("NEXT_PUBLIC_FACEBOOK_URL");
-}
-
-export function xUrl(): string {
-  return readEnv("NEXT_PUBLIC_X_URL");
-}
+export const SOCIAL_URLS = {
+  facebook: facebookUrl(),
+  instagram: instagramUrl(),
+  tiktok: tiktokUrl(),
+  x: xUrl(),
+};
 
 /** npm package root for emoji-datasource-apple (no trailing slash). */
 export function appleEmojiDatasourceBaseUrl(): string {

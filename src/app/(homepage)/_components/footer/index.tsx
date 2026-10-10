@@ -305,6 +305,8 @@ const Footer = () => {
               <Link
                 key={item.id}
                 href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="transition-all hover:underline"
               >
                 <Image src={item.icon} width={24} height={24} alt={item.alt} />
