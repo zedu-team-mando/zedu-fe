@@ -17,8 +17,6 @@ on:
       - reopened
       - converted_to_draft
       - closed
-      - assigned
-      - unassigned
   workflow_run:
     workflows: ["Lead approval", "Fork build"]
     types:
@@ -46,4 +44,4 @@ jobs:
       contents: read
       pull-requests: write
       statuses: read
-    uses: zedu-hng/zedu-ci/.github/workflows/reviewer-notify.yml@a728ac4eacc53c5474fc237eab1b544aa496cefc
+    uses: zedu-hng/zedu-ci/.github/workflows/reviewer-notify.yml@42c819ef031776418c05c47f5d0ed453ff048870

@@ -16,7 +16,7 @@ export const zeduDrongoContributors: Contributor[] = [
   { name: "Rukayyah Ibrahim", username: "cocoon" },
   { name: "Amartey Rukayya Yusuf", username: "rukayya yusuf amartey" },
   { name: "Eda Cynthia Itsekirimi", username: "Cynthy" },
-  { name: "Carlson Chibueze Oranu", username: "carlson" },
+  { name: "Oranu Carlson Chibueze", username: "carlson" },
   { name: "Uyanwanne Emmanuel Chukwudaru", username: "emmyanzo" },
   { name: "Jonathan James Omini", username: "James Jonathan" },
   { name: "Collins", username: "Collins Odogwu" },

@@ -1,0 +1,27 @@
+name: PR nudges
+
+# Caller: the logic lives in zedu-hng/zedu-ci (pr-nudges.yml), pinned by commit. This file sets the
+# triggers, concurrency and token permissions. Keep the file name: other workflows look it up.
+# Nudges the author and leads about unresolved review threads and merge conflicts, 4h per PR.
+
+on:
+  schedule:
+    - cron: "0 */2 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+# Re-evaluates every PR in one sweep, so runs share one group without cancelling.
+concurrency:
+  group: pr-nudges
+  cancel-in-progress: false
+
+jobs:
+  nudge:
+    name: PR nudges
+    if: vars.IS_BOOTCAMP == 'true'
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    uses: zedu-hng/zedu-ci/.github/workflows/pr-nudges.yml@42c819ef031776418c05c47f5d0ed453ff048870

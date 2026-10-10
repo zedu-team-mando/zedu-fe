@@ -81,7 +81,7 @@ export const contributors: Contributor[] = [
     name: "Oparaocha Ogochukwu Mercy",
     username: "Ogos",
     zeduName: "Ogos",
-    background: "Frontend Engineering",
+    background: "Frontend Developer",
     email: "oparaochaogochukwumercy@gmail.com",
     linkedin: "ogochukwu-oparaocha",
     avatarGradient: "from-primary-500 to-alert-400",
