@@ -13,6 +13,22 @@ import useFirstChannel from "../../home/channels/hooks/first-channel";
 import StepIndicator from "~/components/ui/step-indicator";
 import { RegisterWebhookRequest } from "~/utils/webhook-request";
 import { DataContext } from "~/store/GlobalState";
+import {
+  redirectAfterOrgSwitch,
+  resolveChannelIdForOrgSwitch,
+} from "~/utils/org-switch";
+
+// The backend auto-creates a workspace at signup, so onboard-status can be
+// true before the user has chosen one. A missing type is never default.
+const isAutoCreatedOrg = () => {
+  try {
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    const type = user?.organisation?.type ?? "";
+    return type.trim().toLowerCase() === "user default org";
+  } catch {
+    return false;
+  }
+};
 
 // initial states
 const initialState = {
@@ -38,7 +54,7 @@ const CreateOrganization: React.FC = () => {
 
       const userstatus = await GetRequest("/auth/onboard-status", token);
 
-      if (userstatus?.data?.data?.status) {
+      if (userstatus?.data?.data?.status && !isAutoCreatedOrg()) {
         router.push(`/${orgSlug}`);
       } else {
         setLoading(false);
@@ -84,9 +100,29 @@ const CreateOrganization: React.FC = () => {
       await PutRequest("/auth/onboard-status", {}, token);
 
       localStorage.setItem("orgId", res?.data?.data?.id);
-      const channelId = await firstChannel(res?.data?.data?.id);
 
-      window.location.href = `/${orgSlug}/home/channels/${channelId}`;
+      // Switch into the new organisation so the user lands there rather than
+      // the auto-created default (pattern from organization/create/page.tsx).
+      const result = await PutRequest(
+        "/users/switch-org",
+        { current_org: res?.data?.data?.id },
+        token
+      );
+
+      if (result?.status === 200 || result?.status === 201) {
+        localStorage.setItem("token", result?.data?.data?.access_token);
+        localStorage.setItem("orgId", result?.data?.data?.organisation?.id);
+      }
+
+      const channelId = await resolveChannelIdForOrgSwitch(
+        firstChannel,
+        result?.data?.data?.organisation?.id
+      );
+
+      redirectAfterOrgSwitch(
+        result?.data?.data?.current_organisation_slug || orgSlug,
+        channelId
+      );
 
       // send webhook
       const webhookData = `
