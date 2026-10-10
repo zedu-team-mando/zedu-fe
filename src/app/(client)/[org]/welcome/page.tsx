@@ -6,6 +6,18 @@ import { useRouter } from "next/navigation";
 import { GetRequest } from "~/utils/request";
 import { DataContext } from "~/store/GlobalState";
 
+// The backend auto-creates a workspace at signup, so onboard-status can be
+// true before the user has chosen one. A missing type is never default.
+const isAutoCreatedOrg = () => {
+  try {
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    const type = user?.organisation?.type ?? "";
+    return type.trim().toLowerCase() === "user default org";
+  } catch {
+    return false;
+  }
+};
+
 const Welcome = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -18,13 +30,13 @@ const Welcome = () => {
       const token = localStorage.getItem("token") || "";
       const userstatus = await GetRequest("/auth/onboard-status", token);
 
-      if (userstatus?.data?.data?.status) {
-        router.push("/dashboard");
+      if (userstatus?.data?.data?.status && !isAutoCreatedOrg()) {
+        router.push(`/${orgSlug}`);
       } else {
         setLoading(false);
       }
     })();
-  }, [router]);
+  }, [router, orgSlug]);
 
   if (loading) return;
 
