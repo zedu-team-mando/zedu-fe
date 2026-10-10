@@ -5,7 +5,6 @@ import {
   Bold,
   Code,
   SquareCode,
-  FileIcon,
   Hash,
   Italic,
   Upload,
@@ -18,7 +17,6 @@ import {
   Smile,
   Strikethrough,
   Video,
-  XIcon,
 } from "lucide-react";
 import {
   Dialog,
@@ -45,36 +43,24 @@ import { ACTIONS } from "~/store/Actions";
 import { Button } from "~/components/ui/button";
 import { DataContext } from "~/store/GlobalState";
 import { EditorContent } from "@tiptap/react";
-import Image from "next/image";
 import { Input } from "~/components/ui/input";
-import Loading from "~/components/ui/loading";
 import Picker from "~/components/theme/themed-emoji-picker";
 import GifPicker from "~/components/gifs/gif-picker";
 import Tooltips from "../tooltip";
-import { UploadRequest } from "~/utils/new-request";
-import { compressImage } from "~/utils/compress-image";
 import { localGifToFile, type LocalGif } from "~/lib/gifs/local-pack";
 import UseTextEditor from "../editor";
 import { normalizeOutgoingMessageHtml } from "../editor/normalize-message-html";
 import UseTyping from "../typing-users/use-typing";
 import TypingUsers from "../typing-users";
 import { VoiceRecorder } from "../voice/voice-recorder";
-import { VoiceThumbnails } from "../voice/voice-thumbnails";
 import data from "@emoji-mart/data";
 import emojione from "emojione";
 import { emoticonMap } from "./emoticon-map";
+import { AttachmentList } from "./attachment-list";
+import { useAttachments } from "./use-attachments";
 import { useParams } from "next/navigation";
 import { uuidv7 } from "uuidv7";
 import { CHAT_FILE_ACCEPT } from "~/utils/document-files";
-
-interface VoiceMessage {
-  id: string;
-  type: "voice";
-  content: string;
-  audioUrl: string;
-  duration: number;
-  timestamp: string;
-}
 
 const MESSAGE_DRAFTS_KEY = "zedu:message-drafts";
 
@@ -125,11 +111,9 @@ const MessageBox = ({
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
   const [isGifPickerOpen, setIsGifPickerOpen] = useState(false);
   const [showFormatting, setShowformatting] = useState(true);
-  const [media, setMedia] = useState<any>([]);
-  const [medias, setMedias] = useState<string[]>([]);
-  const [uploadingImages, setUploadingImages] = useState<number[]>([]);
   const [isRecording, setIsRecording] = useState(false);
-  const [voiceThumbnails, setVoiceThumbnails] = useState<VoiceMessage[]>([]);
+  const { attachments, uploaded, readyToSend, add, remove, retry, clear } =
+    useAttachments();
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -152,42 +136,7 @@ const MessageBox = ({
     } as any);
   };
 
-  useEffect(() => {
-    return () => {
-      media.forEach((image: any) => URL.revokeObjectURL(image.preview));
-    };
-  }, [media]);
-
-  const handleImagePaste = async (file: File) => {
-    const fileWithId = {
-      id: Date.now() + Math.random(),
-      file,
-      type: "image",
-      preview: URL.createObjectURL(file),
-    };
-
-    setMedia((prev: any) => [...prev, fileWithId]);
-    setUploadingImages((prev) => [...prev, fileWithId.id]);
-
-    const formData = new FormData();
-    const fileToUpload = await compressImage(file);
-    formData.append("files", fileToUpload);
-
-    UploadRequest(`/files/upload-files`, formData)
-      .then((res) => {
-        const imageUrl = res?.data?.data[0];
-
-        if (imageUrl && editor) {
-          setMedias((prev) => [...prev, imageUrl]);
-        }
-      })
-      .catch((error) => {
-        console.error("Image paste upload failed", error);
-      })
-      .finally(() => {
-        setUploadingImages((prev) => prev.filter((id) => id !== fileWithId.id));
-      });
-  };
+  const handleImagePaste = (file: File) => add([file]);
 
   const { handleTyping } = UseTyping(subscription);
   const { editor, isEmpty } = UseTextEditor(
@@ -241,53 +190,11 @@ const MessageBox = ({
     setUrl("");
   };
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
 
-    const newMedia = Array.from(files).map((file) => {
-      const fileType = file.type.split("/")[0];
-
-      return {
-        id: Date.now() + Math.random(),
-        file,
-        type: fileType,
-        preview:
-          fileType === "image" || fileType === "video"
-            ? URL.createObjectURL(file)
-            : null,
-      };
-    });
-
-    setMedia((prevMedia: any) => [...prevMedia, ...newMedia]);
-
-    for (const media of newMedia) {
-      setUploadingImages((prev) => [...prev, media.id]);
-
-      const formData = new FormData();
-      const fileToUpload = await compressImage(media.file);
-      formData.append("files", fileToUpload);
-
-      try {
-        const res = await UploadRequest(`/files/upload-files`, formData);
-        if (res?.data?.data) {
-          setMedias((prevMedias) => [...prevMedias, ...res.data.data]);
-        }
-      } catch (error) {
-        console.error("Upload failed", error);
-      } finally {
-        setUploadingImages((prev) => prev.filter((id) => id !== media.id));
-      }
-    }
-  };
-
-  const handleRemoveImage = (index: number) => {
-    setMedia((prevImages: any) =>
-      prevImages.filter((_: any) => _ !== prevImages[index])
-    );
-    setMedias((prevMedias) => prevMedias.filter((_, i) => i !== index));
+    add(Array.from(files));
   };
 
   const replaceEmoticonsWithEmojis = (text: string) => {
@@ -312,9 +219,9 @@ const MessageBox = ({
     // Extract plain text to check if there's any content (ignore tags)
     const plainTextContent = editorText.trim();
     const hasTextContent = plainTextContent.length > 0;
-    const hasMediaContent = medias.length > 0;
 
-    if (!hasTextContent && !hasMediaContent) return;
+    if (!hasTextContent && attachments.length === 0) return;
+    if (!readyToSend()) return;
 
     handleTyping(false);
 
@@ -329,11 +236,9 @@ const MessageBox = ({
 
     if (subscription) {
       editor.commands.clearContent();
-      setMedia([]);
-      setMedias([]);
-      setVoiceThumbnails([]);
+      clear();
 
-      sendMessage(id, uuid, content, medias);
+      sendMessage(id, uuid, content, uploaded);
       dispatch({ type: ACTIONS.CLEAR_MENTIONS });
     }
   };
@@ -372,35 +277,8 @@ const MessageBox = ({
     setIsGifPickerOpen(false);
 
     try {
-      const file = await localGifToFile(gif);
-      const mediaId = Date.now() + Math.random();
-      const preview = URL.createObjectURL(file);
-
-      const newMedia = {
-        id: mediaId,
-        file,
-        type: "image",
-        preview,
-      };
-
       // Same attach flow as picking a media file
-      setMedia((prevMedia: any) => [...prevMedia, newMedia]);
-      setUploadingImages((prev) => [...prev, mediaId]);
-
-      const formData = new FormData();
-      const fileToUpload = await compressImage(file);
-      formData.append("files", fileToUpload);
-
-      try {
-        const res = await UploadRequest(`/files/upload-files`, formData);
-        if (res?.data?.data) {
-          setMedias((prevMedias) => [...prevMedias, ...res.data.data]);
-        }
-      } catch (error) {
-        console.error("GIF upload failed", error);
-      } finally {
-        setUploadingImages((prev) => prev.filter((id) => id !== mediaId));
-      }
+      add([await localGifToFile(gif)]);
     } catch (error) {
       console.error("GIF select failed", error);
     }
@@ -427,65 +305,20 @@ const MessageBox = ({
   }, [editor, channelLoading]);
 
   const handleSendVoice = (audioBlob: Blob, duration: number) => {
-    const audioUrl = URL.createObjectURL(audioBlob);
-
-    // 1. Create a unique ID for state tracking
-    const mediaId = Date.now() + Math.random();
-
-    // 2. Wrap the Blob in a File object for FormData
-    const audioFile = new File([audioBlob], `voice_message_${mediaId}.wav`, {
+    // Wrap the Blob in a File object for FormData
+    const audioFile = new File([audioBlob], `voice_message_${Date.now()}.wav`, {
       type: audioBlob.type || "audio/wav",
     });
 
-    const newMedia = {
-      id: mediaId,
-      file: audioFile,
-      type: "audio",
-      preview: audioUrl,
-    };
-
-    // Update local state to show the thumbnail/preview
-    setVoiceThumbnails((prev: any) => [
-      ...prev,
-      {
-        ...newMedia,
-        content: "",
-        audioUrl,
-        duration,
-        timestamp: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      },
-    ]);
+    add([audioFile], {
+      content: "",
+      duration,
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    });
     setIsRecording(false);
-
-    const uploadVoice = async () => {
-      setUploadingImages((prev) => [...prev, newMedia.id]);
-
-      const formData = new FormData();
-      formData.append("files", newMedia.file);
-
-      try {
-        const res = await UploadRequest(`/files/upload-files`, formData);
-        if (res?.data?.data) {
-          setMedias((prevMedias) => [...prevMedias, ...res.data.data]);
-        }
-      } catch (error) {
-        console.error("Voice upload failed", error);
-      } finally {
-        setUploadingImages((prev) => prev.filter((id) => id !== newMedia.id));
-      }
-    };
-
-    uploadVoice();
-  };
-
-  const handleRemoveVoice = (index: number) => {
-    setVoiceThumbnails((prev: any) =>
-      prev.filter((_: any) => _ !== prev[index])
-    );
-    setMedias((prevMedias) => prevMedias.filter((_, i) => i !== index));
   };
 
   const composerRef = useRef<HTMLDivElement>(null);
@@ -708,77 +541,11 @@ const MessageBox = ({
               onKeyDown={handleKeyDown}
             />
 
-            <div className={`flex gap-3 ${media?.length > 0 ? "mt-3" : ""}`}>
-              {media?.map((file: any, index: number) => (
-                <div key={index} className="relative w-[70px] h-[70px]">
-                  {/* IMAGE PREVIEW */}
-                  {file.type === "image" && (
-                    <Image
-                      src={file.preview}
-                      alt={`Uploaded ${index}`}
-                      width={70}
-                      height={70}
-                      className="w-[70px] h-[70px] rounded-md object-cover border border-primary-400 cursor-pointer"
-                    />
-                  )}
-
-                  {/* VIDEO PREVIEW */}
-                  {file.type === "video" && (
-                    <video
-                      src={file.preview}
-                      className="w-[70px] h-[70px] rounded-md border border-primary-400 object-cover"
-                      controls
-                    />
-                  )}
-
-                  {/* DOCUMENT / OTHER FILES */}
-
-                  {(file.type.startsWith("application") ||
-                    file.type.startsWith("text")) && (
-                    <div className="w-[70px] h-[70px] flex flex-col items-center justify-center border border-primary-500 rounded-md bg-gray-100 p-1 text-center">
-                      <a
-                        href={URL.createObjectURL(file.file)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex flex-col items-center"
-                      >
-                        <FileIcon size={24} color="#606060" />
-                        <span className="text-xs text-blue-500 mt-1">
-                          {file.file.name.split(".").pop()?.toUpperCase()}
-                        </span>
-                      </a>
-                    </div>
-                  )}
-
-                  {/* REMOVE BUTTON */}
-                  <button
-                    onClick={() => handleRemoveImage(index)}
-                    className="absolute -top-1 -right-2 p-1 bg-gray-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
-                  >
-                    <XIcon size={14} />
-                  </button>
-
-                  {/* UPLOADING INDICATOR */}
-                  {uploadingImages.includes(file?.id) && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
-                      <Loading />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            <div
-              className={`flex gap-3 ${voiceThumbnails?.length > 0 ? "mt-3" : ""}`}
-            >
-              {voiceThumbnails?.map((file: any, index: number) => (
-                <VoiceThumbnails
-                  key={file.id}
-                  {...file}
-                  removeVoice={() => handleRemoveVoice(index)}
-                />
-              ))}
-            </div>
+            <AttachmentList
+              attachments={attachments}
+              onRemove={remove}
+              onRetry={retry}
+            />
           </div>
 
           <div className="flex items-center justify-between">
@@ -935,17 +702,12 @@ const MessageBox = ({
                 className="p-1.5 hover:bg-gray-100 rounded size-8 flex items-center justify-center"
                 onClick={handleSubmit}
                 disabled={
-                  channelLoading ||
-                  (isEmpty &&
-                    media?.length === 0 &&
-                    voiceThumbnails.length === 0)
+                  channelLoading || (isEmpty && attachments.length === 0)
                 }
               >
                 <SendHorizonal
                   className={
-                    isEmpty &&
-                    media?.length === 0 &&
-                    voiceThumbnails.length === 0
+                    isEmpty && attachments.length === 0
                       ? "text-[#999] dark:text-zinc-500"
                       : "text-zinc-900 dark:text-zinc-100"
                   }
