@@ -20,7 +20,11 @@ function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({ password: "", confirmPassword: "" });
+  const [errors, setErrors] = useState({
+    code: "",
+    password: "",
+    confirmPassword: "",
+  });
   const router = useRouter();
   const [buttonloading, setButtonloading] = useState(false);
   const searchParams = useSearchParams();
@@ -44,7 +48,11 @@ function ResetPassword() {
   };
 
   const validateForm = () => {
-    const newErrors = { password: "", confirmPassword: "" };
+    const newErrors = { code: "", password: "", confirmPassword: "" };
+    if (value.length < 6) {
+      newErrors.code = "Enter the 6-digit code from your email";
+    }
+
     if (!password) {
       newErrors.password = "Password is required";
     } else if (password.length < 6) {
@@ -56,7 +64,14 @@ function ResetPassword() {
     }
 
     setErrors(newErrors);
-    return !newErrors.password && !newErrors.confirmPassword;
+    return !newErrors.code && !newErrors.password && !newErrors.confirmPassword;
+  };
+
+  const handleCodeChange = (code: string) => {
+    setValue(code);
+    if (errors.code) {
+      setErrors((prevErrors) => ({ ...prevErrors, code: "" }));
+    }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -161,7 +176,7 @@ function ResetPassword() {
                   className="flex w-full"
                   // onComplete={onOtpSubmit}
                   value={value}
-                  onChange={setValue}
+                  onChange={handleCodeChange}
                   disabled={loading}
                 >
                   {...[0, 1, 2, 3, 4, 5].map((number_) => (
@@ -170,6 +185,11 @@ function ResetPassword() {
                     </InputOTPGroup>
                   ))}
                 </InputOTP>
+                {errors.code && (
+                  <small className="text-[12px] text-[#F81404]">
+                    {errors.code}
+                  </small>
+                )}
               </div>
 
               <div className="w-full flex flex-col gap-[8px] relative">
