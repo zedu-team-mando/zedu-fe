@@ -27,19 +27,24 @@ export function playStoreUrl(): string {
 }
 
 export function facebookUrl(): string {
-  return readEnv("NEXT_PUBLIC_FACEBOOK_URL");
+  return (
+    readEnv("NEXT_PUBLIC_FACEBOOK_URL") ||
+    "https://www.facebook.com/share/1CyRjZC3rz/?mibextid=wwXIfr"
+  );
 }
 
 export function instagramUrl(): string {
-  return readEnv("NEXT_PUBLIC_INSTAGRAM_URL");
+  return (
+    readEnv("NEXT_PUBLIC_INSTAGRAM_URL") || "https://www.instagram.com/telex.im"
+  );
 }
 
 export function tiktokUrl(): string {
-  return readEnv("NEXT_PUBLIC_TIKTOK_URL");
+  return readEnv("NEXT_PUBLIC_TIKTOK_URL") || "https://www.tiktok.com/@telexim";
 }
 
 export function xUrl(): string {
-  return readEnv("NEXT_PUBLIC_X_URL");
+  return readEnv("NEXT_PUBLIC_TWITTER_URL") || "https://x.com/teleximapp";
 }
 
 export function gtmScriptUrl(): string {
