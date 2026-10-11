@@ -2,7 +2,7 @@ import { Button } from "~/components/ui/button";
 import { UserPlusIcon, RobotIcon } from "~/svgs";
 import { EditTopicDialog } from "./edit-topic-dialog";
 import { DataContext } from "~/store/GlobalState";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import images from "~/assets/images";
 import { GetRequest, PostRequest } from "~/utils/new-request";
@@ -147,6 +147,9 @@ export function PeopleTabContainer({ setIsOpen }: any) {
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
+  const [loadMoreError, setLoadMoreError] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const loadMoreSentinelRef = useRef<HTMLDivElement>(null);
 
   const applyUsersPage = (
     incoming: any[],
@@ -171,6 +174,7 @@ export function PeopleTabContainer({ setIsOpen }: any) {
 
     const loadUsers = async () => {
       setLoading(true);
+      setLoadMoreError(false);
       const res = await GetRequest(
         `/channels/${channelId}/users?page=1&limit=${CHANNEL_USERS_PAGE_SIZE}`
       );
@@ -196,6 +200,7 @@ export function PeopleTabContainer({ setIsOpen }: any) {
     if (!channelId || loading || loadingMore || !hasMore) return;
 
     setLoadingMore(true);
+    setLoadMoreError(false);
     const nextPage = page + 1;
     const res = await GetRequest(
       `/channels/${channelId}/users?page=${nextPage}&limit=${CHANNEL_USERS_PAGE_SIZE}`
@@ -203,9 +208,34 @@ export function PeopleTabContainer({ setIsOpen }: any) {
 
     if (res?.status === 200 || res?.status === 201) {
       applyUsersPage(res?.data?.data || [], res?.data?.pagination, false);
+    } else {
+      setLoadMoreError(true);
     }
     setLoadingMore(false);
   };
+
+  // Search filters only the loaded members, so pause auto-loading while a
+  // search is active to avoid paging through the whole channel.
+  const isFiltering = filteredData.length !== users.length;
+  const canAutoLoad =
+    !loading && hasMore && !loadingMore && !loadMoreError && !isFiltering;
+
+  useEffect(() => {
+    const root = scrollContainerRef.current;
+    const sentinel = loadMoreSentinelRef.current;
+    if (!canAutoLoad || !root || !sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) loadMore();
+      },
+      { root, rootMargin: "0px 0px 120px 0px" }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canAutoLoad, page]);
 
   const handleOpenUserProfile = (item: any) => {
     const profile = item?.profile ?? item;
@@ -315,7 +345,7 @@ export function PeopleTabContainer({ setIsOpen }: any) {
       </div>
 
       {/* USERS DISPLAYED */}
-      <div className="max-h-[300px] overflow-auto">
+      <div ref={scrollContainerRef} className="max-h-[300px] overflow-auto">
         {loading ? (
           <div className="flex justify-center py-10">
             <Loading color="#5757CD" />
@@ -380,20 +410,31 @@ export function PeopleTabContainer({ setIsOpen }: any) {
         )}
 
         {!loading && hasMore && (
-          <div className="flex justify-center py-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={loadMore}
-              disabled={loadingMore}
-              className="h-8 px-3 text-[0.8125rem]"
-            >
-              {loadingMore ? (
-                <Loading color="#5757CD" height="16px" width="16px" />
-              ) : (
-                "Load more"
-              )}
-            </Button>
+          <div
+            ref={loadMoreSentinelRef}
+            className="flex flex-col items-center gap-2 py-3"
+          >
+            {loadingMore ? (
+              <Loading color="#5757CD" height="16px" width="16px" />
+            ) : (
+              (loadMoreError || isFiltering) && (
+                <>
+                  {loadMoreError && (
+                    <p className="text-[0.8125rem] text-[#667085] dark:text-zinc-400">
+                      Couldn&apos;t load more members.
+                    </p>
+                  )}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={loadMore}
+                    className="h-8 px-3 text-[0.8125rem]"
+                  >
+                    {loadMoreError ? "Retry" : "Load more"}
+                  </Button>
+                </>
+              )
+            )}
           </div>
         )}
       </div>
