@@ -78,10 +78,10 @@ const resourcesLinks: FooterLink[] = [
 ];
 
 const footerSections = [
-  { title: "Products", links: productLinks, twoColumns: true },
-  { title: "Solutions", links: solutionLinks, twoColumns: true },
-  { title: "Zedu", links: supportLinks, twoColumns: false },
-  { title: "Resources", links: resourcesLinks, twoColumns: false },
+  { title: "Products", links: productLinks },
+  { title: "Solutions", links: solutionLinks },
+  { title: "Zedu", links: supportLinks },
+  { title: "Resources", links: resourcesLinks },
 ];
 
 const socialLinks = [
@@ -252,19 +252,13 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="grid w-full grid-cols-1 gap-12 sm:grid-cols-2 sm:gap-14 xl:grid-cols-4 xl:gap-16 lg:border-l lg:border-neutral-50/25 lg:pl-14">
+          <div className="grid w-full grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4 sm:gap-x-10 xl:gap-16 xl:border-l xl:border-neutral-50/25 xl:pl-14">
             {footerSections.map((section) => (
-              <div key={section.title} className="flex flex-col gap-8">
+              <div key={section.title} className="flex flex-col gap-5 sm:gap-8">
                 <h2 className="text-xl font-semibold text-white">
                   {section.title}
                 </h2>
-                <div
-                  className={`text-neutral-200 ${
-                    section.twoColumns
-                      ? "grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-1"
-                      : "flex flex-col gap-5"
-                  }`}
-                >
+                <div className="flex flex-col gap-4 text-neutral-200 sm:gap-5">
                   {section.links.map((item) => (
                     <Link
                       key={item.id}
