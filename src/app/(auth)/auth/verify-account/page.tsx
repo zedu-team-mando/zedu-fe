@@ -122,7 +122,8 @@ function VerifyAccount() {
 
             <div className="flex flex-col items-center text-[#0F172A]">
               <p className="text-sm font-medium text-[#0F172A] mb-2">
-                We have sent a code to your email {maskEmail(email || "")}
+                We have sent a code to your email{" "}
+                {maskEmail(email || "") || "address"}
               </p>
               <div className="flex flex-col items-center text-base">
                 <span className="text-xs">

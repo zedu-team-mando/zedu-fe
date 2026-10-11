@@ -157,7 +157,8 @@ function ResetPassword() {
               Choose a new password for your account
             </p>
             <p className="w-full text-center text-xs text-[#344054] font-[400] leading-[21px] md:leading-[27px]">
-              We have sent a code to your email {maskEmail(email || "")}
+              We have sent a code to your email{" "}
+              {maskEmail(email || "") || "address"}
             </p>
           </div>
 

@@ -2,10 +2,11 @@
  * Mask the local part of an email address.
  * @function maskEmail
  * @param {string} email - The email address to be masked.
- * @returns {string} The masked email address.
+ * @returns {string} The masked email address, or "" if it has no "@domain".
  */
 export function maskEmail(email: string): string {
   const [localPart, domain] = email.split("@");
+  if (!domain) return "";
   if (localPart.length <= 2) {
     return `${localPart}***@${domain}`;
   }
