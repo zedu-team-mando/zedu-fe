@@ -34,7 +34,9 @@ export const metadata: Metadata = {
     title: "Zedu - Learning Platform for Bootcamps, Schools, and Cohorts",
     description:
       "Built for modern learning: structured channels, AI-powered support, flexible education pricing, and tools that help educators run better cohorts.",
-    url: "/",
+    // "./" resolves to the current page's path, so a page that doesn't set
+    // its own og:url or canonical points at itself, not at the homepage.
+    url: "./",
     siteName: "Zedu",
     images: [
       {
@@ -54,7 +56,7 @@ export const metadata: Metadata = {
     images: [ogImageUrl("og-image-5.png")],
   },
   alternates: {
-    canonical: "/",
+    canonical: "./",
   },
   robots: {
     index: true,
