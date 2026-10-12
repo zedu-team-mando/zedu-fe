@@ -46,7 +46,7 @@ const buzz = (
 
 const BUZZES = [
   // Live, started 9 minutes ago, with the planned end the API sends
-  buzz("CODE-LIVE", "active", minutesAgo(9), minutesFromNow(111)),
+  buzz("CODE-LIVE", "ACTIVE", minutesAgo(9), minutesFromNow(111)),
   // Ended after 45 minutes
   buzz("CODE-ENDED", "ended", minutesAgo(120), minutesAgo(75)),
 ];
