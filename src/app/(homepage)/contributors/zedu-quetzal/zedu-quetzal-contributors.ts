@@ -1,4 +1,4 @@
-import type { Contributor } from "~/data/zedu-osprey-contributors";
+import type { Contributor } from "~/app/(homepage)/contributors/zedu-osprey/_lib/contributors";
 
 export const zeduQuetzalContributors: Contributor[] = [
   { name: "Omolara", username: "melancholia" },

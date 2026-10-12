@@ -143,7 +143,7 @@ const DeletionFAQ = () => {
               Email Support
             </a>
             <a
-              href="/contact"
+              href="/contact-sales"
               className="inline-flex items-center justify-center px-6 py-3 bg-white text-purple-600 font-semibold rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition-all duration-300"
             >
               Contact Us

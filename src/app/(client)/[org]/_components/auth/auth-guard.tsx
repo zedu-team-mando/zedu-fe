@@ -14,6 +14,7 @@ import {
   handleSessionExpired,
   isUnauthorizedResponse,
 } from "~/utils/auth-session";
+import { isReservedPathSegment } from "~/lib/reserved-paths";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -33,6 +34,12 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
 
   useEffect(() => {
     const initializeApp = async () => {
+      const firstSegment = pathname.split("/").filter(Boolean)[0] ?? "";
+      if (isReservedPathSegment(firstSegment)) {
+        setLoading(false);
+        return;
+      }
+
       const isRecorderRoute = pathname.includes("/buzz-record/");
       let orgId = localStorage.getItem("orgId");
       let token = localStorage.getItem("token");

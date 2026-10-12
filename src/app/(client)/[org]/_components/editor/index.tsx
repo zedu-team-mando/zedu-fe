@@ -1,5 +1,5 @@
 import { useContext, useRef, useState } from "react";
-import { useEditor } from "@tiptap/react";
+import { Extension, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Mention from "@tiptap/extension-mention";
@@ -17,6 +17,19 @@ const MessageHardBreak = HardBreak.extend({
     return {
       "Shift-Enter": () => this.editor.commands.setHardBreak(),
       "Mod-Enter": () => this.editor.commands.setHardBreak(),
+    };
+  },
+});
+
+// ProseMirror handles keydown before the wrapper's React onKeyDown, so its default
+// Enter (split block / list item) ran before the send. Claim plain Enter here and let
+// the wrapper send or split the list; code blocks keep the default new line.
+const MessageEnter = Extension.create({
+  name: "messageEnter",
+  priority: 1000,
+  addKeyboardShortcuts() {
+    return {
+      Enter: () => !this.editor.isActive("codeBlock"),
     };
   },
 });
@@ -701,6 +714,7 @@ const UseTextEditor = (
       MessageHardBreak.configure({
         keepMarks: true,
       }),
+      MessageEnter,
       Placeholder.configure({
         placeholder: `Message #${name}`,
       }),

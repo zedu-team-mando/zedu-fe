@@ -165,7 +165,7 @@ export default function ChannelNav({
                   "text-[15px] leading-4 truncate w-[180px] text-blue-50"
                 )}
               >
-                Buzzs
+                Buzzes
               </p>
             </Link>
           )}

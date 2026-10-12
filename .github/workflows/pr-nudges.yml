@@ -24,4 +24,4 @@ jobs:
       contents: read
       pull-requests: write
       issues: write
-    uses: zedu-hng/zedu-ci/.github/workflows/pr-nudges.yml@9e97a8ae95cdf105a094c037da187297f3645b47
+    uses: zedu-hng/zedu-ci/.github/workflows/pr-nudges.yml@f2969e20da08dc048157da6e19265141c0c3e231

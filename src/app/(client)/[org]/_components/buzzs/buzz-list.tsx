@@ -2,7 +2,7 @@
 
 import { useContext, useMemo, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { ChevronDown, Headphones, Plus, X } from "lucide-react";
+import { Headphones, Plus, X } from "lucide-react";
 import { BuzzItem } from "./buzz-item";
 import UseBuzzs from "../../home/channels/hooks/use-buzzs";
 import { DataContext } from "~/store/GlobalState";
@@ -15,7 +15,7 @@ import { navigateBuzzTab, prepareBuzzTab } from "~/lib/buzz/open-buzz-tab";
 import Loading from "~/components/ui/loading";
 
 const FILTER_OPTIONS: { value: BuzzsFilter; label: string }[] = [
-  { value: "all", label: "All buzzs" },
+  { value: "all", label: "All buzzes" },
   { value: "active", label: "Active" },
   { value: "ended", label: "Ended" },
 ];
@@ -77,7 +77,7 @@ export const BuzzList = () => {
     <div className="flex h-full w-full flex-col bg-white">
       <div className="flex shrink-0 items-center justify-between border-b border-[#E6EAEF] px-5 py-4">
         <h1 className="text-[22px] font-bold text-[#1D2939] dark:text-zinc-100">
-          Buzzs
+          Buzzes
         </h1>
         <button
           type="button"
@@ -108,7 +108,7 @@ export const BuzzList = () => {
                   Instantly connect over audio or video
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-[#667085] dark:text-zinc-400">
-                  Buzzs are lightweight audio and video spaces for your team.
+                  Buzzes are lightweight audio and video spaces for your team.
                   Start one for a channel, a quick sync, or an impromptu
                   conversation.
                 </p>
@@ -145,7 +145,7 @@ export const BuzzList = () => {
         <div className="px-5 pb-3 pt-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="text-[15px] font-bold text-[#1D2939]">
-              Recent buzzs
+              Recent buzzes
             </h2>
 
             <div className="flex flex-wrap items-center gap-2">
@@ -162,7 +162,6 @@ export const BuzzList = () => {
                   )}
                 >
                   {option.label}
-                  <ChevronDown className="size-3.5 opacity-60" />
                 </button>
               ))}
             </div>
@@ -181,7 +180,7 @@ export const BuzzList = () => {
               hasMore={hasMore && filter === "all"}
               loader={
                 <p className="py-6 text-center text-xs text-[#667085]">
-                  Loading more buzzs...
+                  Loading more buzzes...
                 </p>
               }
               scrollableTarget="buzzsScrollable"
@@ -199,7 +198,7 @@ export const BuzzList = () => {
                 />
               </div>
               <h3 className="mb-2 text-lg font-bold text-[#344054]">
-                {filter === "all" ? "No buzzs yet" : `No ${filter} buzzs`}
+                {filter === "all" ? "No buzzes yet" : `No ${filter} buzzes`}
               </h3>
               <p className="max-w-sm text-sm text-[#667085]">
                 {filter === "all"
@@ -221,7 +220,7 @@ export const BuzzList = () => {
 
         {!loading && totalItems > 0 && filter === "all" && (
           <p className="px-5 pb-6 text-sm text-[#667085]">
-            {totalItems} buzz{totalItems === 1 ? "" : "s"} in this organisation
+            {totalItems} buzz{totalItems === 1 ? "" : "es"} in this organisation
           </p>
         )}
       </div>

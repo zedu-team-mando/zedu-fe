@@ -38,7 +38,7 @@ export const otherFeatures = [
   {
     title: "Whiteboard",
     description:
-      "Organize, share, and instantly access all your learning resources in one secure, centralized hub reduces clutter, and keeps every class connected.",
+      "Interactive visual canvas for real-time sketching, brainstorming, and collaborative ideation.",
     icon: "/images/homepage/icons/whiteboard.png",
   },
   {

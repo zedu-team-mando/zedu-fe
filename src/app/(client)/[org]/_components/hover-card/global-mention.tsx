@@ -6,6 +6,7 @@ import { PopoverContent, PopoverTrigger } from "~/components/ui/popover";
 import { DataContext } from "~/store/GlobalState";
 import UserHoverCardContent from "./mention";
 import { useRouter } from "next/navigation";
+import { orgSlugFromPathname } from "~/lib/reserved-paths";
 
 interface GlobalMentionProps {
   id: string;
@@ -86,7 +87,7 @@ export default function GlobalMention({
   const orgSlug =
     state?.orgSlug ||
     (typeof window !== "undefined"
-      ? window.location.pathname.split("/").filter(Boolean)[0]
+      ? orgSlugFromPathname(window.location.pathname)
       : "");
 
   const channelDirectory = useMemo(() => {

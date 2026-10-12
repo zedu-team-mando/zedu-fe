@@ -9,6 +9,7 @@ export const contributors: Contributor[] = [
     githubUsername: "TrippleA001",
   },
   { name: "Abdullateef Dauda", githubUsername: "abdul-o" },
+  { name: "Felix Musanzi", githubUsername: "flexxsir" },
   { name: "Adejumoke Oluwole", githubUsername: "jumokeolu" },
   {
     name: "Aisha Abdulkadir Joda",
@@ -93,7 +94,7 @@ export const contributors: Contributor[] = [
     githubUsername: "iamadoctorforreal",
   },
   { name: "Samson Eyitene", githubUsername: "eyisam" },
-  { name: "Samuel Olowu", githubUsername: "samuelolowu-ET-hue" },
+  { name: "Samuel Olowu Trevor", githubUsername: "samuelolowu-ET-hue" },
   {
     name: "Tientcheu Wonsi Dilane",
     githubUsername: "TientcheuWonsiDilane",
