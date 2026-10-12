@@ -68,9 +68,9 @@ export default function ChannelNav({
       const saved = localStorage.getItem("openAccordions");
       return saved
         ? JSON.parse(saved)
-        : ["channels", "workflows", "agents", "people"];
+        : ["starred", "channels", "workflows", "agents", "people"];
     }
-    return ["channels", "workflows", "agents", "people"];
+    return ["starred", "channels", "workflows", "agents", "people"];
   });
 
   const handleAccordionChanges = (values: string[]) => {
@@ -93,6 +93,16 @@ export default function ChannelNav({
   const threadsReady = Array.isArray(state?.threadMentions);
   const unseenThreadCount = state?.unseenThreadCount ?? 0;
   const showThreadsBadge = unseenThreadCount > 0;
+
+  const starredChannels = channelsReady
+    ? state.channels
+        .filter((c: any) => Boolean(c?.is_starred))
+        .sort((a: any, b: any) => {
+          const nameA = (a?.name || a?.channel_slug || "").toLowerCase();
+          const nameB = (b?.name || b?.channel_slug || "").toLowerCase();
+          return nameA.localeCompare(nameB);
+        })
+    : [];
 
   const sortedChannels = channelsReady
     ? state.channels.slice().sort((a: any, b: any) => {
@@ -180,6 +190,37 @@ export default function ChannelNav({
                   onValueChange={handleAccordionChanges}
                   onClick={(e) => e.stopPropagation()}
                 >
+                  {starredChannels.length > 0 && (
+                    <AccordionItem value="starred" className="border-none">
+                      <AccordionTrigger className="font-normal w-full py-0">
+                        <div className="relative py-3 mx-4 flex items-center gap-1 rounded-lg cursor-pointer w-full">
+                          <DropdownIcon
+                            className={`transition-transform duration-300 ${
+                              openAccordions.includes("starred")
+                                ? "rotate-0"
+                                : "-rotate-90"
+                            }`}
+                          />
+                          <h3 className="text-[15px] font-medium">Starred</h3>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent onClick={handleClose}>
+                        <ul className="flex flex-col gap-1">
+                          {starredChannels.map((item: any, index: number) => (
+                            <ChannelCard
+                              {...item}
+                              key={
+                                item?.channels_id ?? item?.channel_slug ?? index
+                              }
+                              selectedChannelId={selectedChannelId}
+                              onSelectChannel={setPendingChannelId}
+                            />
+                          ))}
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                  )}
+
                   <AccordionItem value="channels" className="border-none">
                     <AccordionTrigger className="font-normal w-full py-0">
                       <div className="relative py-3 mx-4 flex items-center gap-1 rounded-lg cursor-pointer w-full">

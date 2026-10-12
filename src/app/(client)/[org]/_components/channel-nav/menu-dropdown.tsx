@@ -17,6 +17,7 @@ import { DataContext } from "~/store/GlobalState";
 import { PostRequest } from "~/utils/new-request";
 import Loading from "~/components/ui/loading";
 import { useRBAC } from "~/hooks/useRBAC";
+import { showError, showSuccess } from "~/components/toast/sonner";
 
 interface MenuDropdownProps {
   isOpen: boolean;
@@ -59,6 +60,37 @@ const MenuDropdown = ({ isOpen, onClose }: MenuDropdownProps) => {
     "px-4 py-[10px] text-[15px] text-[#101828] hover:bg-[#F1F1FE] flex items-center justify-between cursor-pointer";
   const dividerClass = "h-px bg-[#E6EAEF]";
 
+  const isStarred = Boolean(state?.channelDetails?.is_starred);
+
+  const handleToggleStar = async (e: ReactMouseEvent) => {
+    e.stopPropagation();
+    if (!id || buttonLoading) return;
+    setButtonLoading(true);
+
+    const nextStarred = !isStarred;
+    try {
+      const res = await PostRequest(`/channels/${id}/star`);
+      if (res?.status === 200 || res?.status === 201) {
+        const actualStatus = res.data?.data?.is_starred ?? nextStarred;
+        dispatch({
+          type: ACTIONS.UPDATE_CHANNEL_STAR,
+          payload: { channelId: id, isStarred: actualStatus },
+        });
+        showSuccess(
+          res.data?.message ||
+            (actualStatus ? "Channel starred" : "Channel unstarred")
+        );
+      } else {
+        showError("Failed to update starred status");
+      }
+    } catch {
+      showError("Failed to update starred status");
+    } finally {
+      setButtonLoading(false);
+      onClose();
+    }
+  };
+
   const handleLeave = async () => {
     setButtonLoading(true);
 
@@ -93,6 +125,10 @@ const MenuDropdown = ({ isOpen, onClose }: MenuDropdownProps) => {
             <ChannelDetailsDialog className={cn(menuItemClass, "w-full")}>
               Open channel details
             </ChannelDetailsDialog>
+
+            <div className={menuItemClass} onClick={handleToggleStar}>
+              {isStarred ? "Unstar channel" : "Star channel"}
+            </div>
 
             <NotificationSettingsModal />
 

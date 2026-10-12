@@ -28,6 +28,7 @@ import {
   getBuzzTitle,
   isBuzzActive,
 } from "./buzz-utils";
+import { useBuzzHost } from "./use-buzz-host";
 
 interface BuzzItemProps {
   buzz: OrgBuzz;
@@ -35,12 +36,10 @@ interface BuzzItemProps {
 
 export const BuzzItem = ({ buzz }: BuzzItemProps) => {
   const { state } = useContext(DataContext);
-  const { orgSlug, orgMembers, channels } = state;
+  const { orgSlug, channels } = state;
   const [joinLoading, setJoinLoading] = useState(false);
 
-  const host = orgMembers?.find(
-    (member: { id?: string }) => member.id === buzz.host_id
-  );
+  const host = useBuzzHost(buzz.host_id);
   const hostName =
     host?.name || host?.username || host?.email?.split("@")[0] || "Someone";
 

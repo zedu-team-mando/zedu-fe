@@ -15,8 +15,9 @@ import PinnedMessagesModal from "../pinned-messages/pinned-messages-modal";
 import Tooltips from "../tooltip";
 import { cn } from "~/lib/utils";
 import { PostRequest } from "~/utils/new-request";
-import { showError } from "~/components/toast/sonner";
+import { showError, showSuccess } from "~/components/toast/sonner";
 import { useParams } from "next/navigation";
+import { StarIcon } from "~/svgs";
 import {
   DEACTIVATED_AVATAR_SRC,
   isUserDeactivated,
@@ -43,6 +44,37 @@ const ChannelHeader = () => {
   const [startLoading, setStartLoading] = useState(false);
   const [joinLoading, setJoinLoading] = useState(false);
   const [startBuzzConfirmOpen, setStartBuzzConfirmOpen] = useState(false);
+  const [starLoading, setStarLoading] = useState(false);
+
+  const isStarred = Boolean(channelDetails?.is_starred);
+
+  const handleToggleStar = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!id || starLoading) return;
+    setStarLoading(true);
+
+    const nextStarred = !isStarred;
+    try {
+      const res = await PostRequest(`/channels/${id}/star`);
+      if (res?.status === 200 || res?.status === 201) {
+        const actualStatus = res.data?.data?.is_starred ?? nextStarred;
+        dispatch({
+          type: ACTIONS.UPDATE_CHANNEL_STAR,
+          payload: { channelId: id, isStarred: actualStatus },
+        });
+        showSuccess(
+          res.data?.message ||
+            (actualStatus ? "Channel starred" : "Channel unstarred")
+        );
+      } else {
+        showError("Failed to update starred status");
+      }
+    } catch (err) {
+      showError("Failed to update starred status");
+    } finally {
+      setStarLoading(false);
+    }
+  };
 
   const handleJoin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,19 +158,39 @@ const ChannelHeader = () => {
   return (
     <nav className="border-b border-[#E6EAEF] px-3 pt-3 md:px-5 md:pt-4">
       <div className="flex items-start justify-between gap-3">
-        <ChannelDetailsDialog>
-          <Tooltips side="bottom" text="Get channel details">
-            <h2 className="text-base lg:text-lg font-bold hover:bg-gray-100 px-2 py-1 rounded-md flex items-center gap-1.5">
-              {displayName &&
-                (showPrivateIcon ? (
-                  <Lock className="size-4 lg:size-5 shrink-0" />
-                ) : (
-                  <Hash className="size-4 lg:size-5 shrink-0" />
-                ))}
-              {displayName}
-            </h2>
+        <div className="flex items-center gap-1.5">
+          <Tooltips
+            side="bottom"
+            text={isStarred ? "Remove from Starred" : "Add to Starred"}
+          >
+            <button
+              type="button"
+              aria-label={isStarred ? "Unstar channel" : "Star channel"}
+              onClick={handleToggleStar}
+              className="p-1.5 rounded-md transition-all duration-150 hover:bg-gray-100 dark:hover:bg-zinc-800 active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+            >
+              <StarIcon
+                filled={isStarred}
+                color={isStarred ? "#EAAA08" : "#98A2B3"}
+                size={18}
+              />
+            </button>
           </Tooltips>
-        </ChannelDetailsDialog>
+
+          <ChannelDetailsDialog>
+            <Tooltips side="bottom" text="Get channel details">
+              <h2 className="text-base lg:text-lg font-bold hover:bg-gray-100 px-2 py-1 rounded-md flex items-center gap-1.5">
+                {displayName &&
+                  (showPrivateIcon ? (
+                    <Lock className="size-4 lg:size-5 shrink-0" />
+                  ) : (
+                    <Hash className="size-4 lg:size-5 shrink-0" />
+                  ))}
+                {displayName}
+              </h2>
+            </Tooltips>
+          </ChannelDetailsDialog>
+        </div>
 
         {!state?.channelloading &&
           state?.channelDetails?.access === true &&

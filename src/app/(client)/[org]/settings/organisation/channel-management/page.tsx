@@ -805,7 +805,7 @@ const OrganisationChannelManagementPage = () => {
                               When enabled, only the channel owner, admins, and
                               members you explicitly allow can send top-level
                               messages. Everyone else sees: &quot;Only admins
-                              can send message on this channel&quot;.
+                              can send messages in this channel.&quot;
                             </p>
                           </div>
                         </div>

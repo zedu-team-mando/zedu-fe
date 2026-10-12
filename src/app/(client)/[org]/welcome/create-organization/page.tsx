@@ -131,41 +131,30 @@ const CreateOrganization: React.FC = () => {
         return;
       }
 
-      if (switched?.access_token) {
-        localStorage.setItem("token", switched.access_token);
-      }
-      localStorage.setItem(
-        "orgId",
-        switched?.organisation?.id ?? res?.data?.data?.id
+      localStorage.setItem("orgId", res?.data?.data?.id);
+
+      // Switch into the new organisation so the user lands there rather than
+      // the auto-created default (pattern from organization/create/page.tsx).
+      const result = await PutRequest(
+        "/users/switch-org",
+        { current_org: res?.data?.data?.id },
+        token
       );
 
-      // Keep the stored user in step with the new workspace so the welcome
-      // pages do not mistake it for the auto-created default one.
-      try {
-        const storedUser = JSON.parse(localStorage.getItem("user") || "null");
-        if (storedUser) {
-          localStorage.setItem(
-            "user",
-            JSON.stringify({
-              ...storedUser,
-              organisation: {
-                ...storedUser.organisation,
-                ...switched?.organisation,
-                type: switched?.organisation?.type ?? values.organisationType,
-              },
-            })
-          );
-        }
-      } catch {
-        // Storage not available: nothing more to do.
+      if (result?.status === 200 || result?.status === 201) {
+        localStorage.setItem("token", result?.data?.data?.access_token);
+        localStorage.setItem("orgId", result?.data?.data?.organisation?.id);
       }
 
       const channelId = await resolveChannelIdForOrgSwitch(
         firstChannel,
-        switched?.organisation?.id
+        result?.data?.data?.organisation?.id
       );
 
-      redirectAfterOrgSwitch(newSlug, channelId);
+      redirectAfterOrgSwitch(
+        result?.data?.data?.current_organisation_slug || orgSlug,
+        channelId
+      );
 
       // send webhook
       const webhookData = `

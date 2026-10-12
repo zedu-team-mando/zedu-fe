@@ -220,6 +220,30 @@ const reducers = (state: any, action: any) => {
         ...state,
         channelDetails: payload,
       };
+    case ACTIONS.UPDATE_CHANNEL_STAR: {
+      const { channelId, isStarred } = payload || {};
+      const updatedChannelDetails =
+        state?.channelDetails &&
+        String(
+          state?.channelDetails?.channels_id || state?.channelDetails?.id
+        ) === String(channelId)
+          ? { ...state.channelDetails, is_starred: isStarred }
+          : state.channelDetails;
+
+      const updatedChannels = Array.isArray(state?.channels)
+        ? state.channels.map((ch: any) =>
+            String(ch?.channels_id || ch?.id) === String(channelId)
+              ? { ...ch, is_starred: isStarred }
+              : ch
+          )
+        : state.channels;
+
+      return {
+        ...state,
+        channelDetails: updatedChannelDetails,
+        channels: updatedChannels,
+      };
+    }
     case ACTIONS.CHANNEL_NAME:
       return {
         ...state,

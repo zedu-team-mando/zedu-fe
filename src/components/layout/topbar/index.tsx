@@ -8,6 +8,7 @@ import {
   ChevronDown,
   ChevronUp,
   Pin,
+  CircleHelp,
 } from "lucide-react";
 import { PinIcon } from "~/svgs/index";
 import { usePathname } from "next/navigation";
@@ -44,6 +45,12 @@ import {
 import { RequirePermission } from "~/components/rbac/RequirePermission";
 import { useRBAC } from "~/hooks/useRBAC";
 import { isOwnerOrAdministrator } from "~/utils/rbac";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
+import NavigationHistory from "~/components/layout/topbar/navigation-history";
 
 const Topbar = () => {
   const name: string = localStorage.getItem("channelName") || "";
@@ -510,15 +517,60 @@ const Topbar = () => {
       </div>
 
       {!pathname.includes(`/${orgSlug}/welcome`) && (
-        <div className="hidden sm:flex">
-          <SearchInput name={name} orgId={orgData?.id} />
+        <div className="flex min-w-0 items-center sm:flex-1 sm:max-w-2xl">
+          <NavigationHistory />
+          <div className="hidden min-w-0 sm:block sm:flex-1">
+            <SearchInput name={name} orgId={orgData?.id} />
+          </div>
         </div>
       )}
 
       {/* Rightmost section: AI Credits */}
-      <div className="flex h-full w-3/5 lg:w-auto  items-center lg:py-1 mr-2 lg:mr-0 lg:gap-6">
+      <div className="flex h-full min-w-0 lg:w-auto items-center lg:py-1 mr-2 lg:mr-0 lg:gap-6">
         <PillWidget />
         <MiniWidget />
+        <Popover>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <PopoverTrigger asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Help"
+                  className="ml-1 size-9 shrink-0 text-white hover:bg-blue-300 hover:text-white focus-visible:ring-white"
+                >
+                  <CircleHelp className="size-5" aria-hidden="true" />
+                </Button>
+              </PopoverTrigger>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">Help</TooltipContent>
+          </Tooltip>
+          <PopoverContent align="end" sideOffset={8}>
+            <div className="flex flex-col gap-3">
+              <div>
+                <p className="font-semibold text-neutral-900">
+                  How can we help?
+                </p>
+                <p className="mt-1 text-sm text-neutral-600">
+                  Browse helpful resources or contact our support team.
+                </p>
+              </div>
+              <Link
+                href="/resources"
+                className="rounded-md px-3 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                Browse resources
+              </Link>
+              <a
+                href="mailto:support@zedu.chat"
+                className="rounded-md px-3 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                Contact support
+              </a>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
     </div>
   );

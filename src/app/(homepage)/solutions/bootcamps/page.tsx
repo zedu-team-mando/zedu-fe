@@ -107,7 +107,7 @@ const comparisonData = {
     "Each cohort has focused channels for lessons, resources, and updates",
     "Students receive real-time help through organized discussion channels",
     "Mentors and instructors can track progress and collaboration in one central workspace",
-    "All feedback and collaboration happens in structured threads that are easy to follow.",
+    "All feedback and collaboration happen in structured threads that are easy to follow.",
   ],
 };
 
