@@ -107,54 +107,47 @@ const CreateOrganization: React.FC = () => {
 
     if (res?.status === 200 || res?.status === 201) {
       createdOrgIdRef.current = res?.data?.data?.id ?? null;
+
       // onboard the user
       await PutRequest("/auth/onboard-status", {}, token);
-      // Switch into the new organisation so the user lands there rather than
-      // the auto-created default (pattern from organization/create/page.tsx).
-      const result = await PutRequest(
+
+      // Switch into the new organisation so the user lands there.
+      const switchResult = await PutRequest(
         "/users/switch-org",
         { current_org: res?.data?.data?.id },
         token
       );
 
-      const switched = result?.data?.data;
+      const switched = switchResult?.data?.data;
       const newSlug = switched?.current_organisation_slug;
       const switchWorked =
-        (result?.status === 200 || result?.status === 201) && Boolean(newSlug);
+        (switchResult?.status === 200 || switchResult?.status === 201) &&
+        Boolean(newSlug);
 
       if (!switchWorked) {
         // Stay here so the user can retry. Never redirect into the old workspace.
-        showError(
-          "We could not switch to your new workspace. Please try again."
-        );
+        showError("We could not switch to your new workspace. Please try again.");
         setButtonloding(false);
         return;
       }
 
-      localStorage.setItem("orgId", res?.data?.data?.id);
+      if (switched?.access_token) {
+        localStorage.setItem("token", switched.access_token);
+      }
 
-      // Switch into the new organisation so the user lands there rather than
-      // the auto-created default (pattern from organization/create/page.tsx).
-      const result = await PutRequest(
-        "/users/switch-org",
-        { current_org: res?.data?.data?.id },
-        token
-      );
+      const switchedOrgId =
+        switched?.organisation?.id ?? res?.data?.data?.id;
 
-      if (result?.status === 200 || result?.status === 201) {
-        localStorage.setItem("token", result?.data?.data?.access_token);
-        localStorage.setItem("orgId", result?.data?.data?.organisation?.id);
+      if (switchedOrgId) {
+        localStorage.setItem("orgId", String(switchedOrgId));
       }
 
       const channelId = await resolveChannelIdForOrgSwitch(
         firstChannel,
-        result?.data?.data?.organisation?.id
+        switchedOrgId
       );
 
-      redirectAfterOrgSwitch(
-        result?.data?.data?.current_organisation_slug || orgSlug,
-        channelId
-      );
+      redirectAfterOrgSwitch(newSlug, channelId);
 
       // send webhook
       const webhookData = `
