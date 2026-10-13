@@ -88,7 +88,7 @@ export const PricingSection = ({
         size.
       </h1>
       <Link
-        href={"client/settings/organisation/billing/all-plans"}
+        href="/pricing#compare-plans"
         className="group flex items-center gap-2 font-semibold text-primary-500"
       >
         Compare different plans

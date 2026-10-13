@@ -118,6 +118,16 @@ const ClientLayout = ({
     }
 
     if (slug === "client") {
+      // "/client/*" is an alias for the current org (used by marketing links
+      // that can't know the slug). Swap in the real slug once we have one.
+      if (storedSlug && storedSlug !== "client") {
+        router.replace(
+          `${pathname.replace(/^\/client/, `/${storedSlug}`)}${window.location.search}`
+        );
+        return () => {
+          cancelled = true;
+        };
+      }
       dispatch({
         type: ACTIONS.ORG_SLUG,
         payload: "client",
