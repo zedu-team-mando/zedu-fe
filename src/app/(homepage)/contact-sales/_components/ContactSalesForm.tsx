@@ -207,6 +207,8 @@ export const ContactSalesForm = () => {
           <Input
             id="phone"
             name="phone"
+            type="tel"
+            autoComplete="tel"
             value={formData.phone}
             onChange={(event) => updateField("phone", event.target.value)}
             onBlur={() => validateField("phone")}
