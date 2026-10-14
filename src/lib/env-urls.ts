@@ -1,6 +1,14 @@
-function readEnv(name: string): string {
-  return (process.env[name] ?? "").replace(/\/$/, "");
+function clean(value: string | undefined): string {
+  return (value ?? "").replace(/\/$/, "");
 }
+
+function readEnv(name: string): string {
+  return clean(process.env[name]);
+}
+
+// Next.js only inlines NEXT_PUBLIC_* values into browser code when they are
+// written out in full. readEnv(name) returns "" in client components, so
+// links rendered by client components must read process.env.NEXT_PUBLIC_* directly.
 
 export function siteUrl(path = ""): string {
   const base = readEnv("NEXT_PUBLIC_CLIENT_URL");
@@ -24,27 +32,6 @@ export function appStoreUrl(): string {
 
 export function playStoreUrl(): string {
   return readEnv("NEXT_PUBLIC_PLAY_STORE_URL");
-}
-
-export function facebookUrl(): string {
-  return (
-    readEnv("NEXT_PUBLIC_FACEBOOK_URL") ||
-    "https://www.facebook.com/share/1CyRjZC3rz/?mibextid=wwXIfr"
-  );
-}
-
-export function instagramUrl(): string {
-  return (
-    readEnv("NEXT_PUBLIC_INSTAGRAM_URL") || "https://www.instagram.com/telex.im"
-  );
-}
-
-export function tiktokUrl(): string {
-  return readEnv("NEXT_PUBLIC_TIKTOK_URL") || "https://www.tiktok.com/@telexim";
-}
-
-export function xUrl(): string {
-  return readEnv("NEXT_PUBLIC_TWITTER_URL") || "https://x.com/teleximapp";
 }
 
 export function gtmScriptUrl(): string {
@@ -107,6 +94,22 @@ export function officeEmbedUrl(fileUrl: string): string | null {
 
 export function uiAvatarUrl(name: string): string {
   return `${readEnv("NEXT_PUBLIC_UI_AVATARS_URL")}?name=${encodeURIComponent(name)}`;
+}
+
+export function instagramUrl(): string {
+  return clean(process.env.NEXT_PUBLIC_INSTAGRAM_URL);
+}
+
+export function tiktokUrl(): string {
+  return clean(process.env.NEXT_PUBLIC_TIKTOK_URL);
+}
+
+export function facebookUrl(): string {
+  return clean(process.env.NEXT_PUBLIC_FACEBOOK_URL);
+}
+
+export function xUrl(): string {
+  return clean(process.env.NEXT_PUBLIC_X_URL);
 }
 
 /** npm package root for emoji-datasource-apple (no trailing slash). */
