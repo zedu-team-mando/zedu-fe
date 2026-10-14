@@ -38,7 +38,7 @@ export const otherFeatures = [
   {
     title: "Whiteboard",
     description:
-      "Organize, share, and instantly access all your learning resources in one secure, centralized hub reduces clutter, and keeps every class connected.",
+      "Interactive visual canvas for real-time sketching, brainstorming, and collaborative ideation.",
     icon: "/images/homepage/icons/whiteboard.png",
   },
   {
@@ -84,7 +84,7 @@ export const features = [
   {
     title: "Calls & Collaboration",
     description:
-      "Work across languages, time zones, and regions with chats, docs, and meetings in one place and Bridge every gap with real-time collaboration tools.",
+      "Work across languages, time zones, and regions with chats, docs, and meetings in one place and bridge every gap with real-time collaboration tools.",
     imageSrc: "/images/homepage/features/calls-and-collaboration.png",
     imageAlt:
       "Illustration of the Zedu interface showcasing calls and collaboration features",

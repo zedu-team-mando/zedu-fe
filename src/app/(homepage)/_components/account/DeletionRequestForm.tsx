@@ -132,7 +132,7 @@ const DeletionRequestForm = () => {
           {/* Name Field */}
           <div className="mb-6">
             <label
-              htmlFor="name"
+              htmlFor="fullname"
               className="block text-sm font-semibold text-gray-900 mb-2"
             >
               Full Name <span className="text-red-500">*</span>

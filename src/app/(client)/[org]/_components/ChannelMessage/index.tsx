@@ -173,7 +173,9 @@ const ChannelsMessage = () => {
             {threads?.map((item: any, index: number) => {
               const nextMessage = threads[index + 1];
               const shouldShowAvatar =
-                !nextMessage || nextMessage.user_id !== item.user_id;
+                !nextMessage ||
+                nextMessage.user_id !== item.user_id ||
+                nextMessage.type === "system";
 
               const isSaved = bookmarks?.some(
                 (b: any) => b.thread_id === item.thread_id

@@ -262,13 +262,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
             onClick={handleLogout}
             className="px-5 py-2 cursor-pointer hover:bg-blue-500 hover:text-white"
           >
-            {orgData?.name ? (
-              <span>
-                Sign out of <span className="capitalize">{orgData?.name}</span>
-              </span>
-            ) : (
-              <span>Sign out</span>
-            )}
+            <span>Sign out</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

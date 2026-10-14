@@ -40,13 +40,11 @@ const formatStamp = (value?: string) => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
 
-  const time = date
-    .toLocaleTimeString([], {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    })
-    .replace(/\s?(am|pm)/i, "");
+  const time = date.toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
 
   if (date.toDateString() === new Date().toDateString()) return time;
 

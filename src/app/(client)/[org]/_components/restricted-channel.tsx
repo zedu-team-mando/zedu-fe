@@ -41,7 +41,7 @@ const RestrictedChannel = () => {
           <Lock className="h-5 w-5" />
         </div>
         <h2 className="text-base font-semibold text-[#101828] dark:text-zinc-100">
-          Only admins can send message on this channel
+          Only admins can send messages in this channel.
         </h2>
         <p className="mt-1 max-w-md text-sm text-[#667085] dark:text-zinc-400">
           Posting in {channelName ? `#${channelName}` : "this channel"} is

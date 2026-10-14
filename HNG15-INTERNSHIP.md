@@ -28,7 +28,7 @@ synced with `zedu-hng`; you just pull before branching.
 2. Get the latest `dev` from your team's fork, then branch as `<type>/<ticket-id>-<desc>`.
 3. Make the change and test it locally against your team's backend.
 4. Push the branch and open **one** PR to `zedu-hng/zedu-fe:dev`.
-5. The team fork builds the PR (**Fork build**), and a **Preview** link appears when it's ready.
+5. **PR checks** build the PR (**Build**), and a **Preview** link appears when it's ready.
 6. Your **team lead** reviews the diff and the preview, then approves — **Lead approved** goes green.
 7. A Zedu reviewer claims it (`/claim`), reviews the diff and the preview, then **squash merges**.
 8. Your team syncs its fork's `dev`. Reviewers then promote `dev` → `central-staging` and release that to `zeduchat` in batches, on to `staging` and `main`.
@@ -51,7 +51,7 @@ synced with `zedu-hng`; you just pull before branching.
 | `Size`                                   | ~400 meaningful lines; larger needs a reviewer's `size-override`.        |
 | `Protected files`                        | Don't change `.github/`, `AGENTS.md`, `CONTRIBUTING.md`, tooling config. |
 | `Lead approved`                          | Your team lead's approval.                                               |
-| `Fork build`                             | Your code builds in the team fork.                                       |
+| `Build`                                  | Your code builds in the PR checks.                                       |
 | `Preview`                                | A hosted, live build you and your lead can click through.                |
 | Security scans                           | Gitleaks, Semgrep, ClamAV, dependency audit.                             |
 
@@ -66,7 +66,7 @@ synced with `zedu-hng`; you just pull before branching.
 - A PR waits on two people: your lead first, then a reviewer. A nudge in your team channel is fine.
 - Reviewers work a shared queue (`ready-for-review`), oldest first. A busy team's extra PRs wait as
   `queued` and are picked up automatically as slots free.
-- The preview runs against the shared dev backend. If your change needs backend work that isn't on
-  `dev` yet, say so with a `Backend URL:` line in the PR description (see CONTRIBUTING) so it can't
+- The preview runs against the live backend (`api.zedu.chat`). Log in with a test account, not a real
+  one. If your change needs backend work that isn't live yet, say so with a `Backend URL:` line in the PR description (see CONTRIBUTING) so it can't
   merge early.
 - If a check fails, open its **Details**; the message names the fix.

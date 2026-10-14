@@ -21,8 +21,8 @@ describe("E2e tests for signup and login", () => {
     cy.url().should("include", "/dashboard/welcome");
     cy.contains("Welcome to Telex.").should("be.visible");
     cy.contains("button", "Get Started").click();
-    cy.contains("h2", "Create Your Organization").should("be.visible");
-    cy.contains("label", "Organization Name").should("be.visible");
+    cy.contains("h2", "Create Your Organisation").should("be.visible");
+    cy.contains("label", "Organisation Name").should("be.visible");
     cy.get('input[name="organisationName"]').type("OrganisationName");
     cy.get('input[name="organisationType"]').type("OrganisationType");
     cy.get('button:contains("Select")').eq(0).click();

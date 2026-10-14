@@ -39,6 +39,6 @@ export const homeFAQs: HomeFAQ[] = [
     id: "item-6",
     question: "How does pricing work for educational institutions?",
     answer:
-      "Pricing is flexible based on your institution size, usage needs, and required features. Zedu offers plans for growing cohorts and custom options for larger schools or multi-program organizations.",
+      "Pricing is flexible based on your institution size, usage needs, and required features. Zedu offers plans for growing cohorts and custom options for larger schools or multi-program organisations.",
   },
 ];

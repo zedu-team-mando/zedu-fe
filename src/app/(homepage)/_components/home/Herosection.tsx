@@ -20,11 +20,17 @@ const HeroSection = () => {
         <span className="text-primary-500">Learning</span> Communities
       </h1>
       <p className="max-w-[95%] text-xs text-neutral-600 sm:max-w-[90%] sm:text-base md:max-w-[65%] lg:max-w-[45%] lg:text-lg">
-        Talk about structured channels, cohort communication, and affordable
-        pricing.
+        Bring learners and educators together with organized conversations,
+        seamless cohort collaboration, and affordable communication tools built
+        for learning communities.
       </p>
       <div className="flex w-full max-w-md flex-row items-center justify-center gap-2 sm:gap-3">
-        <ArrowBtn text="Try for free" linkToHome className="justify-center" />
+        <ArrowBtn
+          text="Try for free"
+          linkToHome
+          loggedInText="Go to Dashboard"
+          className="justify-center"
+        />
         <OutlineBtn text="Contact sales" href="/contact-sales" />
       </div>
       <div className="flex w-full max-w-[90%] flex-col items-center justify-center gap-1 text-center text-xs text-neutral-500 sm:max-w-2xl sm:flex-row sm:gap-2 sm:text-sm">

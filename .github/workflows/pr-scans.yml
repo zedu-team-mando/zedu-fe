@@ -28,7 +28,7 @@ jobs:
     if: github.repository == 'zedu-hng/zedu-fe'
     permissions:
       contents: read
-    uses: zedu-hng/zedu-ci/.github/workflows/pr-scans.yml@ed2c2cdb27717ae5fa31cb45f49dd2f31dc86837
+    uses: zedu-hng/zedu-ci/.github/workflows/pr-scans.yml@181371c60af0e32605794c6f0c4520f1ef739271
     with:
       semgrep_configs: p/typescript p/react p/nextjs p/security-audit
       semgrep_paths: src

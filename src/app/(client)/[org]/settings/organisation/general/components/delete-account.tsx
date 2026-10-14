@@ -99,7 +99,7 @@ const DeleteAccount = () => {
             <div className="border-b pb-4 mb-4 space-y-2 text-sm">
               <p>
                 <CircleCheck className="inline mr-2 text-green-500" size={18} />
-                delete the organization, all associated data and members.
+                delete the organisation, all associated data and members.
               </p>
               <p>
                 <CircleCheck className="inline mr-2 text-green-500" size={18} />

@@ -308,12 +308,12 @@ function Policy() {
               may contact us at{" "}
               <span className="p-1">
                 <Link
-                  href="mailto:support@zedu.org"
+                  href="mailto:support@zedu.chat"
                   target="_blank"
                   rel=""
                   className="text-blue-500"
                 >
-                  support@zedu.org
+                  support@zedu.chat
                 </Link>
               </span>
             </p>

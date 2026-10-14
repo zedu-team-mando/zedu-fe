@@ -96,7 +96,7 @@ export const FeatureSection = () => {
               <div>
                 <Image
                   src={"/images/homepage/socials-row.png"}
-                  alt="socials-row"
+                  alt="Icons of common chat and video apps, such as WhatsApp, Slack, Telegram and Discord"
                   height={35}
                   width={225}
                   priority

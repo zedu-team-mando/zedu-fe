@@ -12,14 +12,9 @@ import {
   AtSign,
   Hash,
   Slash,
-  XIcon,
-  FileIcon,
   SendHorizonal,
   Upload,
 } from "lucide-react";
-import Image from "next/image";
-import { UploadRequest } from "~/utils/new-request";
-import { compressImage } from "~/utils/compress-image";
 import { useParams } from "next/navigation";
 import { uuidv7 } from "uuidv7";
 import { EditorContent } from "@tiptap/react";
@@ -36,7 +31,6 @@ import { Button } from "~/components/ui/button";
 import Picker from "~/components/theme/themed-emoji-picker";
 import GifPicker from "~/components/gifs/gif-picker";
 import data from "@emoji-mart/data";
-import Loading from "~/components/ui/loading";
 import {
   Popover,
   PopoverContent,
@@ -45,6 +39,8 @@ import {
 import UseTextEditor from "./editor";
 import { normalizeOutgoingMessageHtml } from "./editor/normalize-message-html";
 import Tooltips from "./tooltip";
+import { AttachmentList } from "./message-box/attachment-list";
+import { useAttachments } from "./message-box/use-attachments";
 import { CHAT_FILE_ACCEPT } from "~/utils/document-files";
 import { localGifToFile, type LocalGif } from "~/lib/gifs/local-pack";
 
@@ -60,16 +56,8 @@ const FirstMessageBox = ({ sendMessage }: any) => {
   const [isGifPickerOpen, setIsGifPickerOpen] = useState(false);
   const [showFormatting, setShowformatting] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [media, setMedia] = useState<any>([]);
-  const [medias, setMedias] = useState<string[]>([]);
-  const [uploadingImages, setUploadingImages] = useState<number[]>([]);
-
-  // Cleanup object URLs
-  useEffect(() => {
-    return () => {
-      media.forEach((image: any) => URL.revokeObjectURL(image.preview));
-    };
-  }, [media]);
+  const { attachments, uploaded, readyToSend, add, remove, retry, clear } =
+    useAttachments();
 
   const handleSave = () => {
     if (!text || !url) return;
@@ -87,53 +75,11 @@ const FirstMessageBox = ({ sendMessage }: any) => {
     setUrl("");
   };
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
 
-    const newMedia = Array.from(files).map((file) => {
-      const fileType = file.type.split("/")[0];
-
-      return {
-        id: Date.now() + Math.random(),
-        file,
-        type: fileType,
-        preview:
-          fileType === "image" || fileType === "video"
-            ? URL.createObjectURL(file)
-            : null,
-      };
-    });
-
-    setMedia((prevMedia: any) => [...prevMedia, ...newMedia]);
-
-    for (const media of newMedia) {
-      setUploadingImages((prev) => [...prev, media.id]);
-
-      const formData = new FormData();
-      const fileToUpload = await compressImage(media.file);
-      formData.append("files", fileToUpload);
-
-      try {
-        const res = await UploadRequest(`/files/upload-files`, formData);
-        if (res?.data?.data) {
-          setMedias((prevMedias) => [...prevMedias, ...res.data.data]);
-        }
-      } catch (error) {
-        console.error("Upload failed", error);
-      } finally {
-        setUploadingImages((prev) => prev.filter((id) => id !== media.id));
-      }
-    }
-  };
-
-  const handleRemoveImage = (index: number) => {
-    setMedia((prevImages: any) =>
-      prevImages.filter((_: any) => _ !== prevImages[index])
-    );
-    setMedias((prevMedias) => prevMedias.filter((_, i) => i !== index));
+    add(Array.from(files));
   };
 
   // Handle message submission (no need to upload images here)
@@ -148,14 +94,13 @@ const FirstMessageBox = ({ sendMessage }: any) => {
 
     const strippedContent = content?.replace(/<[^>]+>/g, "").trim();
 
-    if (!strippedContent && medias.length === 0) {
-      return;
-    }
+    if (!strippedContent && attachments.length === 0) return;
+    if (!readyToSend()) return;
 
     editor?.commands?.clearContent();
-    setMedia([]);
+    clear();
 
-    sendMessage(id, uuid, content, medias);
+    sendMessage(id, uuid, content, uploaded);
   };
 
   const handleKeyDown = (event: any) => {
@@ -182,34 +127,7 @@ const FirstMessageBox = ({ sendMessage }: any) => {
     setIsGifPickerOpen(false);
 
     try {
-      const file = await localGifToFile(gif);
-      const mediaId = Date.now() + Math.random();
-      const preview = URL.createObjectURL(file);
-
-      const newMedia = {
-        id: mediaId,
-        file,
-        type: "image",
-        preview,
-      };
-
-      setMedia((prevMedia: any) => [...prevMedia, newMedia]);
-      setUploadingImages((prev) => [...prev, mediaId]);
-
-      const formData = new FormData();
-      const fileToUpload = await compressImage(file);
-      formData.append("files", fileToUpload);
-
-      try {
-        const res = await UploadRequest(`/files/upload-files`, formData);
-        if (res?.data?.data) {
-          setMedias((prevMedias) => [...prevMedias, ...res.data.data]);
-        }
-      } catch (error) {
-        console.error("GIF upload failed", error);
-      } finally {
-        setUploadingImages((prev) => prev.filter((id) => id !== mediaId));
-      }
+      add([await localGifToFile(gif)]);
     } catch (error) {
       console.error("GIF select failed", error);
     }
@@ -390,46 +308,11 @@ const FirstMessageBox = ({ sendMessage }: any) => {
             onKeyDown={handleKeyDown}
           />
 
-          <div className={`flex gap-3 ${media?.length > 0 ? "mt-3" : ""}`}>
-            {media?.map((file: any, index: number) => (
-              <div key={index} className="relative w-[70px] h-[70px]">
-                {file.type === "image" ? (
-                  <Image
-                    src={file.preview}
-                    alt={`Uploaded ${index}`}
-                    width={70}
-                    height={70}
-                    className="w-[70px] h-[70px] rounded-md object-cover border border-primary-400 cursor-pointer"
-                  />
-                ) : file.type === "application" ? (
-                  <div className="w-[70px] h-[70px] flex items-center justify-center border border-primary-500 rounded-md bg-gray-100">
-                    <a
-                      href={URL.createObjectURL(file.file)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex flex-col items-center"
-                    >
-                      <FileIcon size={24} color="#606060" />
-                      <span className="text-xs text-blue-500 mt-1">PDF</span>
-                    </a>
-                  </div>
-                ) : null}
-
-                <button
-                  onClick={() => handleRemoveImage(index)}
-                  className="absolute -top-1 -right-2 p-1 bg-gray-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
-                >
-                  <XIcon size={14} />
-                </button>
-
-                {uploadingImages.includes(file?.id) && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
-                    <Loading />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+          <AttachmentList
+            attachments={attachments}
+            onRemove={remove}
+            onRetry={retry}
+          />
         </div>
 
         <div className="flex items-center justify-between">
@@ -551,11 +434,11 @@ const FirstMessageBox = ({ sendMessage }: any) => {
               type="submit"
               className="p-1.5 hover:bg-gray-100 rounded size-8 flex items-center justify-center"
               onClick={handleSubmit}
-              disabled={isEmpty && media?.length === 0}
+              disabled={isEmpty && attachments.length === 0}
             >
               <SendHorizonal
                 className={
-                  isEmpty && media?.length === 0
+                  isEmpty && attachments.length === 0
                     ? "text-[#999] dark:text-zinc-500"
                     : "text-zinc-900 dark:text-zinc-100"
                 }

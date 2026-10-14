@@ -42,6 +42,7 @@ export const ArrowBtn = ({
   href,
   linkToHome,
   inverted,
+  loggedInText,
   hideArrow = false,
 }: {
   text: string;
@@ -50,6 +51,7 @@ export const ArrowBtn = ({
   href?: string;
   hideArrow?: boolean;
   linkToHome?: boolean;
+  loggedInText?: string;
   inverted?: boolean;
 }) => {
   const [token, setToken] = useState<string | null>(null);
@@ -71,7 +73,7 @@ export const ArrowBtn = ({
           className
         )}
       >
-        {text}
+        {token && loggedInText ? loggedInText : text}
         {!hideArrow && (
           <div
             className={cn(

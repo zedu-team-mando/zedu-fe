@@ -11,12 +11,14 @@ import {
   type MouseEvent as ReactMouseEvent,
 } from "react";
 import { cn } from "~/lib/utils";
+import { Button } from "~/components/ui/button";
 import NotificationSettingsModal from "../notification-modal";
 import { ACTIONS } from "~/store/Actions";
 import { DataContext } from "~/store/GlobalState";
 import { PostRequest } from "~/utils/new-request";
 import Loading from "~/components/ui/loading";
 import { useRBAC } from "~/hooks/useRBAC";
+import { showSuccess } from "~/components/toast/sonner";
 
 interface MenuDropdownProps {
   isOpen: boolean;
@@ -59,6 +61,35 @@ const MenuDropdown = ({ isOpen, onClose }: MenuDropdownProps) => {
     "px-4 py-[10px] text-[15px] text-[#101828] hover:bg-[#F1F1FE] flex items-center justify-between cursor-pointer";
   const dividerClass = "h-px bg-[#E6EAEF]";
 
+  const detailsMatch =
+    String(state?.channelDetails?.channels_id || "") === String(id || "");
+  const isStarred = detailsMatch && Boolean(state?.channelDetails?.is_starred);
+
+  const handleToggleStar = async (e: ReactMouseEvent) => {
+    e.stopPropagation();
+    if (!id || !detailsMatch || buttonLoading) return;
+    setButtonLoading(true);
+
+    const nextStarred = !isStarred;
+    try {
+      const res = await PostRequest(`/channels/${id}/star`);
+      if (res?.status === 200 || res?.status === 201) {
+        const actualStatus = res.data?.data?.is_starred ?? nextStarred;
+        dispatch({
+          type: ACTIONS.UPDATE_CHANNEL_STAR,
+          payload: { channelId: id, isStarred: actualStatus },
+        });
+        showSuccess(
+          res.data?.message ||
+            (actualStatus ? "Channel starred" : "Channel unstarred")
+        );
+      }
+    } finally {
+      setButtonLoading(false);
+      onClose();
+    }
+  };
+
   const handleLeave = async () => {
     setButtonLoading(true);
 
@@ -93,6 +124,19 @@ const MenuDropdown = ({ isOpen, onClose }: MenuDropdownProps) => {
             <ChannelDetailsDialog className={cn(menuItemClass, "w-full")}>
               Open channel details
             </ChannelDetailsDialog>
+
+            <Button
+              type="button"
+              variant="ghost"
+              disabled={!detailsMatch || buttonLoading}
+              className={cn(
+                menuItemClass,
+                "w-full h-auto rounded-none font-normal"
+              )}
+              onClick={handleToggleStar}
+            >
+              {isStarred ? "Unstar channel" : "Star channel"}
+            </Button>
 
             <NotificationSettingsModal />
 

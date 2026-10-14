@@ -14,10 +14,11 @@
 #
 # Env: REPO, GH_TOKEN, COOLIFY_URL (https only), COOLIFY_TOKEN, COOLIFY_PREVIEW_APP,
 #      PREVIEW_CAP (30), PREVIEW_TTL_HOURS (48), DRY_RUN=1 (no Coolify, GHCR or GitHub writes).
-# Config from the base checkout: .github/preview.env, .github/preview-orgs.
+# Config: preview/zedu-fe.env and preview/zedu-fe-orgs on zedu-ci main, read live like teams.yml.
+# A failed read stops the script (fail closed); the next sweep retries.
 #
 # The build artifact's meta.json is written next to PR code, so nothing here trusts it: the PR,
-# gate and backend are recomputed from the GitHub API and the base branch config.
+# gate and backend are recomputed from the GitHub API and the zedu-ci main config.
 # State: one bot comment per PR, edited in place:
 #   <!-- fe-preview state=active|queued|expired|evicted|removed|error|skipped sha= tag= host= dep= at= -->
 # `at` is the expiry baseline: when this commit last became active or queued (a push, or a
@@ -31,7 +32,13 @@ CAP=${PREVIEW_CAP:-30}
 TTL_H=${PREVIEW_TTL_HOURS:-48}
 NOW=$(date +%s)
 MARK="<!-- fe-preview"
-CFG=.github/preview.env
+CI_REPO=${CI_REPO:-zedu-hng/zedu-ci}
+CFG=$(mktemp); ORGS=$(mktemp)
+trap 'rm -f "$CFG" "$ORGS"' EXIT
+for f in "zedu-fe.env:$CFG" "zedu-fe-orgs:$ORGS"; do
+  gh api -H "Accept: application/vnd.github.raw" "repos/$CI_REPO/contents/preview/${f%%:*}?ref=main" > "${f##*:}" \
+    || { echo "::error::Couldn't read preview/${f%%:*} from $CI_REPO main."; exit 1; }
+done
 cfg() { sed -n "s/^$1=//p" "$CFG" | head -1; }
 DOMAIN=$(cfg PREVIEW_DOMAIN)
 DEFAULT_HOST=$(cfg PREVIEW_BACKEND_HOST)
@@ -149,7 +156,7 @@ remove() { # pr new-state message -> 0 when Coolify confirmed the delete
 
 gate_of() { # head-repo labels-json -> reviewer|registered|label|skip
   if [ "$1" = "$REPO" ]; then echo reviewer
-  elif grep -v '^#' .github/preview-orgs | grep -qixF "${1%%/*}"; then echo registered
+  elif grep -v '^#' "$ORGS" | grep -qixF "${1%%/*}"; then echo registered
   elif jq -e 'index("preview") != null' <<< "$2" >/dev/null; then echo label
   else echo skip; fi
 }
@@ -249,9 +256,9 @@ deploy() { # head-sha image
     return 0
   fi
   if [ "$override" = true ]; then
-    status "$sha" "Backend dependency" failure "Depends on backend preview $host. Merge after it's on dev, then delete the Backend URL line."
+    status "$sha" "Backend dependency" failure "Depends on backend preview $host. Merge after it's on the live backend, then delete the Backend URL line."
   else
-    status "$sha" "Backend dependency" success "Uses the dev backend"
+    status "$sha" "Backend dependency" success "Uses the live backend"
   fi
 
   gate=$(gate_of "$head_repo" "$labels")

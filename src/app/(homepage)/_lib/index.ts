@@ -20,7 +20,7 @@ export const otherReasons = [
   },
   {
     title: "Private Cohorts & Controlled Spaces",
-    desc: "Each cohort runs in its own secure environment. No cross-over, no messy group chats ,just focused learning spaces.",
+    desc: "Each cohort runs in its own secure environment. No cross-over, no messy group chats, just focused learning spaces.",
   },
   {
     title: "Data Protection & Platform Reliability",

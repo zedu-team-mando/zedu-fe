@@ -1,0 +1,24 @@
+name: Obfuscation sweep
+
+# Caller: the logic lives in zedu-hng/zedu-ci (obfuscation-sweep.yml), pinned by commit. Weekly scan
+# of every file on dev for hidden or obfuscated code already committed (the PR scan only sees what a
+# PR adds). A finding fails the run, so the repo's Actions failure notifications fire.
+# allow_long_paths: inline SVG path data is legitimately long. Those files skip the long-line rule
+# only; the padding, indicator and obfuscation rules still run on them.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  sweep:
+    name: Obfuscation sweep
+    if: github.repository == 'zedu-hng/zedu-fe'
+    permissions:
+      contents: read
+    uses: zedu-hng/zedu-ci/.github/workflows/obfuscation-sweep.yml@181371c60af0e32605794c6f0c4520f1ef739271
+    with:
+      allow_long_paths: "src/app/**/svgs/index.tsx"

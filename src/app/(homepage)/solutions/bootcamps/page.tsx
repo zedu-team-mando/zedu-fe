@@ -107,7 +107,7 @@ const comparisonData = {
     "Each cohort has focused channels for lessons, resources, and updates",
     "Students receive real-time help through organized discussion channels",
     "Mentors and instructors can track progress and collaboration in one central workspace",
-    "All feedback and collaboration happens in structured threads that are easy to follow.",
+    "All feedback and collaboration happen in structured threads that are easy to follow.",
   ],
 };
 
@@ -154,7 +154,7 @@ const BootCampsSolutionsPage = () => {
               </div>
               <span className="font-semibold text-[#1f2530]">4.9</span>
               <span className="text-[#8a90a0]">|</span>
-              <span>Users Love us</span>
+              <span>Users love us</span>
             </div>{" "}
             <div className="flex flex-wrap items-center justify-center gap-3 lg:justify-start">
               <ArrowBtn text="Book a Demo" href="/contact-sales" />

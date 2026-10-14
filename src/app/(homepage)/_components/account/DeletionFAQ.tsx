@@ -59,9 +59,9 @@ const DeletionFAQ = () => {
         "If you don't receive the verification email within 10 minutes, please check your spam folder. If it's still not there, you can request a new verification email or contact our support team at support@zedu.chat for assistance.",
     },
     {
-      question: "Will deleting my account affect my team or organization?",
+      question: "Will deleting my account affect my team or organisation?",
       answer:
-        "If you're a member of an organization, your departure will be notified to the organization admins. If you're an organization owner, you'll need to transfer ownership or delete the organization before you can delete your personal account. We'll guide you through this process when you submit your deletion request.",
+        "If you're a member of an organisation, your departure will be notified to the organisation admins. If you're an organisation owner, you'll need to transfer ownership or delete the organisation before you can delete your personal account. We'll guide you through this process when you submit your deletion request.",
     },
     {
       question:
@@ -143,7 +143,7 @@ const DeletionFAQ = () => {
               Email Support
             </a>
             <a
-              href="/contact"
+              href="/contact-sales"
               className="inline-flex items-center justify-center px-6 py-3 bg-white text-purple-600 font-semibold rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition-all duration-300"
             >
               Contact Us

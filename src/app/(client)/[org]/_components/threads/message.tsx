@@ -37,13 +37,11 @@ const Message = ({ item, shouldShowAvatar }: MessageProps) => {
           <UserAvatar item={item} size="sm" className="mb-2" alt="profile" />
         ) : (
           <span className="mt-1 block w-[36px] text-xs text-[#98A2B3]">
-            {new Date(item?.created_at)
-              .toLocaleTimeString([], {
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: true,
-              })
-              .replace(/\s?(am|pm)/i, "")}
+            {new Date(item?.created_at).toLocaleTimeString([], {
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })}
           </span>
         )}
       </div>

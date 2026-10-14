@@ -96,7 +96,7 @@ export const Client = () => {
             Your Organisation Billing Information
           </h1>
           <p className="text-sm text-[#344054]">
-            Securely manage your organization’s billing details, payment
+            Securely manage your organisation’s billing details, payment
             history, and subscriptions.
           </p>
         </div>

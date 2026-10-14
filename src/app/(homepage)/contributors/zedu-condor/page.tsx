@@ -7,11 +7,11 @@ import { contributors } from "./_lib/contributors";
 export const metadata: Metadata = {
   title: "Contributors",
   description:
-    "Meet the developers, designers, and QA engineers behind Zedu, built by the Zedu-Condor team.",
+    "Meet the developers, designers, product managers and QA engineers behind Zedu, built by the Zedu-Condor team.",
   openGraph: {
     title: "Contributors - The Team Behind Zedu",
     description:
-      "Zedu is built by a community of developers, designers, and testers. Meet the team.",
+      "Zedu is built by a community of developers, designers, product managers, and testers. Meet the team.",
     url: siteUrl("/contributors/zedu-condor"),
     siteName: "Zedu",
     images: [
@@ -49,7 +49,8 @@ const ContributorsPage = () => {
           The Team Behind <span className="text-primary-500">Zedu</span>
         </h1>
         <p className="max-w-[95%] text-xs text-neutral-600 sm:max-w-[80%] sm:text-base md:max-w-[60%] lg:max-w-[45%] lg:text-lg">
-          Zedu is built by a community of developers, designers, and testers.
+          Zedu is built by a community of developers, designers, product
+          managers, and testers.
         </p>
         <p className="text-sm font-medium text-neutral-900 sm:text-base">
           {contributors.length} Contributors and counting

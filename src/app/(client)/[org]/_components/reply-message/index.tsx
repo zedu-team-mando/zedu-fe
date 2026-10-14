@@ -190,13 +190,11 @@ const ReplyMessage = ({ fetchMoreData, hasMore }: any) => {
                     </span>
 
                     <span className="text-xs text-[#98A2B3]">
-                      {new Date(thread?.created_at)
-                        .toLocaleTimeString([], {
-                          hour: "numeric",
-                          minute: "2-digit",
-                          hour12: true,
-                        })
-                        .replace(/ AM| PM/, "")}
+                      {new Date(thread?.created_at).toLocaleTimeString([], {
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
                     </span>
                   </div>
 

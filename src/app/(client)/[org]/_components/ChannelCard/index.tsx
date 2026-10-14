@@ -19,6 +19,7 @@ interface ComponentProps {
   archived?: boolean;
   mention_count: number;
   is_private: boolean;
+  is_starred?: boolean;
   preview_thread: any;
   active_buzz?: boolean;
   selectedChannelId?: string;

@@ -31,8 +31,13 @@ jobs:
       contents: read
       pull-requests: read
       statuses: write
-    uses: zedu-hng/zedu-ci/.github/workflows/pr-rules.yml@ed2c2cdb27717ae5fa31cb45f49dd2f31dc86837
+    uses: zedu-hng/zedu-ci/.github/workflows/pr-rules.yml@181371c60af0e32605794c6f0c4520f1ef739271
     with:
       protected: '^(\.github/|AGENTS\.md$|CONTRIBUTING\.md$|components\.json$|eslint\.config\.mjs$|\.prettierrc$|\.prettierignore$|tsconfig\.json$|next\.config\.mjs$|postcss\.config\.|tailwind\.config\.|commitlint\.config|\.gitleaks\.toml$|\.semgrepignore$|\.husky/|\.npmrc$)'
       size_exclude: '(^|/)(pnpm-lock\.yaml|package-lock\.json|yarn\.lock)$|\.tsbuildinfo$'
       template: .github/pull_request_template.md
+      # Team PRs are allowed: these three rules are switched off, not removed. They still post their status,
+      # as passed, so required checks keep reporting. Set a line to true (or delete it) to enforce it again.
+      enforce_single_author: false
+      enforce_branch_name: false
+      enforce_size: false

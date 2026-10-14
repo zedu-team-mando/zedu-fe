@@ -26,7 +26,7 @@ export const AgentDetailsModal = (props: ComponentProps) => {
                   <strong>Name</strong>: {props.agent.app_name}
                 </h1>
                 <h1 className="text-base">
-                  <strong>Organization</strong>:{" "}
+                  <strong>Organisation</strong>:{" "}
                   {props.agent?.provider?.organization}
                 </h1>
                 <p className="text-base">

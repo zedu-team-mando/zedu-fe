@@ -25,6 +25,7 @@ import { SaveMessage } from "~/utils/new-request";
 import { useParams, usePathname } from "next/navigation";
 import PinMessageDialog from "../pin-message-modal";
 import { buildMessageLink, getMessageLinkContext } from "~/utils/message-link";
+import { orgSlugFromPathname } from "~/lib/reserved-paths";
 import { showInfo } from "~/components/toast/sonner";
 
 const MessageContextMenu = ({ item }: any) => {
@@ -77,7 +78,7 @@ const MessageContextMenu = ({ item }: any) => {
     const resolvedOrgSlug =
       orgSlug ||
       (typeof window !== "undefined"
-        ? window.location.pathname.split("/").filter(Boolean)[0]
+        ? orgSlugFromPathname(window.location.pathname)
         : "");
 
     if (!threadId || !id || !resolvedOrgSlug) return;

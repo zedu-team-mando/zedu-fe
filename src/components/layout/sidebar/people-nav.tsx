@@ -104,7 +104,7 @@ export default function PeopleNav({
 
         <div className="relative h-fit w-full px-3">
           <Input
-            type="search"
+            type="text"
             placeholder="Find a conversation"
             className="h-10 pl-8 pr-8 bg-[#4A4AAF] border-[#5F5FE1] text-white placeholder:text-white/80"
             onChange={(e) => setSearchInput(e.target.value)}

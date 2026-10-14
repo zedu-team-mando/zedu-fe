@@ -6,7 +6,7 @@ import { ContactSalesForm } from "./_components/ContactSalesForm";
 export const metadata: Metadata = {
   title: "Contact Sales",
   description:
-    "Contact the Zedu sales team to find the right plan for your school, bootcamp, or learning organization. Get tailored pricing, onboarding guidance, and enterprise support.",
+    "Contact the Zedu sales team to find the right plan for your school, bootcamp, or learning organisation. Get tailored pricing, onboarding guidance, and enterprise support.",
   keywords: [
     "contact Zedu sales",
     "education platform demo",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Contact Sales - Zedu",
     description:
-      "Get tailored plans and onboarding from Zedu sales for your school, bootcamp, or cohort-based learning organization.",
+      "Get tailored plans and onboarding from Zedu sales for your school, bootcamp, or cohort-based learning organisation.",
     images: [ogImageUrl("og-image-5.png")],
   },
   alternates: {

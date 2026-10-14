@@ -51,7 +51,7 @@ const staticPricingCards: PricingCardData[] = [
     periodLabel: "/month",
     footnote: "",
     features: [
-      { text: "Everything in Zedu Free, and", enabled: true },
+      { text: "Everything in Starter, and", enabled: true },
       { text: "Unlimited cohorts", enabled: true },
       { text: "Live classes and collaboration tools", enabled: true },
       { text: "AI study assistants", enabled: true },
@@ -71,7 +71,7 @@ const staticPricingCards: PricingCardData[] = [
       "Flexible pricing for Universities, large programs, and institutions.",
     amount: "Let's Talk",
     features: [
-      { text: "Everything in Zedu Educator, and", enabled: true },
+      { text: "Everything in Pro, and", enabled: true },
       { text: "Advanced AI agents and automation", enabled: true },
       { text: "Institution-level workspace control", enabled: true },
       { text: "Security and compliance tools", enabled: true },
