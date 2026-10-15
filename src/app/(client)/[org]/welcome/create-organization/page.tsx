@@ -126,7 +126,9 @@ const CreateOrganization: React.FC = () => {
 
       if (!switchWorked) {
         // Stay here so the user can retry. Never redirect into the old workspace.
-        showError("We could not switch to your new workspace. Please try again.");
+        showError(
+          "We could not switch to your new workspace. Please try again."
+        );
         setButtonloding(false);
         return;
       }
@@ -135,8 +137,7 @@ const CreateOrganization: React.FC = () => {
         localStorage.setItem("token", switched.access_token);
       }
 
-      const switchedOrgId =
-        switched?.organisation?.id ?? res?.data?.data?.id;
+      const switchedOrgId = switched?.organisation?.id ?? res?.data?.data?.id;
 
       if (switchedOrgId) {
         localStorage.setItem("orgId", String(switchedOrgId));
