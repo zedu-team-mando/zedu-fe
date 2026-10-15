@@ -186,7 +186,7 @@ function ResetPassword() {
                   ))}
                 </InputOTP>
                 {errors.code && (
-                  <small className="text-[12px] text-[#F81404]">
+                  <small className="text-xs text-[#F81404]">
                     {errors.code}
                   </small>
                 )}
