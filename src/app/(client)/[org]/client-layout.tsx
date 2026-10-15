@@ -120,7 +120,7 @@ const ClientLayout = ({
     if (slug === "client") {
       // "/client/*" is an alias for the current org (used by marketing links
       // that can't know the slug). Swap in the real slug once we have one.
-      if (storedSlug && storedSlug !== "client") {
+      if (storedSlug && storedSlug !== "client" && storedSlug !== "undefined") {
         router.replace(
           `${pathname.replace(/^\/client/, `/${storedSlug}`)}${window.location.search}`
         );
