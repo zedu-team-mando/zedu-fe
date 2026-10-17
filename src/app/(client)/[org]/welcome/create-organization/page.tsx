@@ -12,6 +12,7 @@ import CustomSelect from "~/components/ui/custom-select";
 import useFirstChannel from "../../home/channels/hooks/first-channel";
 import StepIndicator from "~/components/ui/step-indicator";
 import { RegisterWebhookRequest } from "~/utils/webhook-request";
+import { showError } from "~/components/toast/sonner";
 import {
   redirectAfterOrgSwitch,
   resolveChannelIdForOrgSwitch,
@@ -100,22 +101,36 @@ const CreateOrganization: React.FC = () => {
       token
     );
 
-    if (result?.status !== 200 && result?.status !== 201) {
+    const switched = result?.data?.data;
+    const slug = switched?.current_organisation_slug;
+    const switchWorked =
+      (result?.status === 200 || result?.status === 201) && Boolean(slug);
+
+    if (!switchWorked) {
+      // Stay here so the user can retry. Never redirect into the old workspace.
+      showError("We could not switch to your new workspace. Please try again.");
       setButtonloding(false);
       return;
     }
 
-    const organisation = result?.data?.data?.organisation;
-    const slug = result?.data?.data?.current_organisation_slug || org;
-    localStorage.setItem("token", result?.data?.data?.access_token);
-    localStorage.setItem("orgId", organisation?.id || target?.id);
+    const organisation = switched?.organisation;
+    const organisationId = organisation?.id || target?.id;
+
+    if (switched?.access_token) {
+      localStorage.setItem("token", switched.access_token);
+    }
+
+    if (organisationId) {
+      localStorage.setItem("orgId", String(organisationId));
+    }
+
     localStorage.setItem("orgSlug", slug);
     // The switch response can omit fields such as type, so fall back to the created org
     storeCurrentOrganisation({ ...target, ...organisation });
 
     const channelId = await resolveChannelIdForOrgSwitch(
       firstChannel,
-      organisation?.id || target?.id
+      organisationId
     );
 
     redirectAfterOrgSwitch(slug, channelId);
