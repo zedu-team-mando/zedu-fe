@@ -50,7 +50,8 @@ export default function UserGroupsTab({
                 </span>
                 <div className="flex items-center gap-2 text-[13px] text-gray-500">
                   <span className="font-medium text-black">
-                    {group.members_count || 0} members
+                    {group.members_count || 0}{" "}
+                    {(group.members_count || 0) === 1 ? "member" : "members"}
                   </span>
                   <span>•</span>
                   <span className="truncate max-w-[300px]">

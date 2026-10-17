@@ -83,7 +83,7 @@ const FolderList: React.FC<FolderListProps> = ({
 
       {/* Size Column - Hidden on mobile */}
       <div className="hidden md:flex md:col-span-1 items-center text-[#4B5563]">
-        {item_count} items
+        {item_count} {item_count === 1 ? "item" : "items"}
       </div>
 
       {/* Actions Column */}

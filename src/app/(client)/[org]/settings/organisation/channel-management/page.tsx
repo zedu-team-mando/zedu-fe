@@ -742,7 +742,10 @@ const OrganisationChannelManagementPage = () => {
                       <div className="mt-3 flex flex-wrap gap-4 text-xs text-[#667085] dark:text-zinc-400">
                         <span className="inline-flex items-center gap-1.5">
                           <Users className="h-3.5 w-3.5" />
-                          {selectedDetail?.user_count ?? 0} members
+                          {selectedDetail?.user_count ?? 0}{" "}
+                          {(selectedDetail?.user_count ?? 0) === 1
+                            ? "member"
+                            : "members"}
                         </span>
                         <span className="inline-flex items-center gap-1.5">
                           <Shield className="h-3.5 w-3.5" />

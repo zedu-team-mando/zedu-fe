@@ -83,10 +83,12 @@ export function StartBuzzConfirmModal({
   const chipLabel =
     variant === "channel"
       ? `${displayName.startsWith("#") ? displayName : `#${displayName}`}${
-          showMemberCount ? ` · ${memberCount} members` : ""
+          showMemberCount
+            ? ` · ${memberCount} ${memberCount === 1 ? "member" : "members"}`
+            : ""
         }`
       : showMemberCount
-        ? `${displayName} · ${memberCount} members`
+        ? `${displayName} · ${memberCount} ${memberCount === 1 ? "member" : "members"}`
         : displayName;
 
   return (

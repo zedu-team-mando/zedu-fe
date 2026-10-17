@@ -329,7 +329,8 @@ export default function ChannelsTab() {
                       </span>
                     )}
                     <span className="text-[13px] text-gray-500 dark:text-zinc-400">
-                      {channel.members_count} members
+                      {channel.members_count}{" "}
+                      {channel.members_count === 1 ? "member" : "members"}
                     </span>
                     {channel.description && (
                       <>

@@ -528,7 +528,8 @@ const UseTextEditor = (
 
       const secondaryTextSpan = document.createElement("span");
       secondaryTextSpan.textContent =
-        channel?.description || `${channel?.members_count ?? 0} members`;
+        channel?.description ||
+        `${channel?.members_count ?? 0} ${(channel?.members_count ?? 0) === 1 ? "member" : "members"}`;
       secondaryTextSpan.className = "text-xs text-gray-500 secondary-span";
       textContainer.appendChild(mainTextLine);
       textContainer.appendChild(secondaryTextSpan);
