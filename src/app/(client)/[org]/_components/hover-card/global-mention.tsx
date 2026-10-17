@@ -146,9 +146,11 @@ export default function GlobalMention({
   };
 
   const isSystemMessage = item?.type === "system";
+  const displayLabel =
+    isSystemMessage && trigger === "@" ? label.replace(/^@/, "") : label;
 
   const mentionClassName = isSystemMessage
-    ? "text-[#6B7280] bg-[#EEF0F3] hover:bg-[#E4E7EC] dark:bg-white/10 dark:hover:bg-white/15 px-1 rounded cursor-pointer transition-colors font-medium inline-flex items-center mx-[1px]"
+    ? "cursor-pointer font-semibold text-[#667085] transition-colors hover:text-primary-500"
     : isChannel
       ? "text-[#9A6700] bg-[#FFF3B0] hover:bg-[#FFE566] dark:text-[#F5D90A] dark:bg-[#4A3F00] dark:hover:bg-[#5C4E00] px-1 rounded cursor-pointer transition-colors font-medium inline-flex items-center mx-[1px]"
       : isSelfMention
@@ -164,8 +166,8 @@ export default function GlobalMention({
         onClick={isNavigableChannelMention ? handleChannelClick : undefined}
         onKeyDown={isNavigableChannelMention ? handleChannelKeyDown : undefined}
       >
-        {trigger}
-        {label}
+        {!isSystemMessage && trigger}
+        {displayLabel}
       </span>
     );
   }
@@ -178,8 +180,8 @@ export default function GlobalMention({
           onMouseLeave={handleMouseLeave}
           className={mentionClassName}
         >
-          {trigger}
-          {label}
+          {!isSystemMessage && trigger}
+          {displayLabel}
         </span>
       </PopoverTrigger>
 

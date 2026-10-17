@@ -3,6 +3,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   Forward,
+  Info,
   MessageCircleMore,
   SmilePlus,
   Bookmark,
@@ -213,20 +214,23 @@ const Message = ({
     }
   };
 
-  // Join/leave notices render as a single line; the @mention already names the user
   if (item?.type === "system") {
     return (
-      <div className="message-row flex items-center gap-2 px-5 py-1">
-        <span className="min-w-[36px] whitespace-nowrap text-xs text-[#98A2B3]">
+      <div className="message-row flex items-center gap-2 px-5 py-0.5">
+        <Info aria-hidden="true" className="size-3.5 shrink-0 text-[#98A2B3]" />
+        <div className="min-w-0 flex-1 text-[13px]">
+          <MessageItem item={item} />
+        </div>
+        <time
+          dateTime={item?.created_at}
+          className="ml-auto shrink-0 whitespace-nowrap text-[11px] text-[#98A2B3]"
+        >
           {new Date(item?.created_at).toLocaleTimeString([], {
             hour: "numeric",
             minute: "2-digit",
             hour12: true,
           })}
-        </span>
-        <div className="min-w-0 flex-1">
-          <MessageItem item={item} />
-        </div>
+        </time>
       </div>
     );
   }

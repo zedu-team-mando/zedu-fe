@@ -257,7 +257,10 @@ const MessageItem: React.FC<MessageItemProps> = ({ item }) => {
     }
 
     if (typeof children === "string") {
-      const mentionRegex = /([@#][a-zA-Z0-9_.-]+(?:\s[a-zA-Z0-9_.-]+)*)/g;
+      const mentionRegex =
+        item?.type === "system"
+          ? /(@[a-zA-Z0-9_.-]+)/g
+          : /([@#][a-zA-Z0-9_.-]+(?:\s[a-zA-Z0-9_.-]+)*)/g;
       const parts = children.split(mentionRegex);
 
       return parts.map((part: any, i: number) => {
@@ -294,7 +297,9 @@ const MessageItem: React.FC<MessageItemProps> = ({ item }) => {
 
   return (
     <div>
-      <div className="w-full text-[#344054] text-[13px] lg:text-[15px] font-[400] break-words custom-message">
+      <div
+        className={`w-full text-[#344054] text-[13px] ${item?.type === "system" ? "" : "lg:text-[15px]"} font-[400] break-words custom-message`}
+      >
         <div
           style={{
             whiteSpace: "pre-wrap",
@@ -311,7 +316,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ item }) => {
                   <p
                     style={{
                       margin: "0",
-                      lineHeight: "22px",
+                      lineHeight: item?.type === "system" ? "18px" : "22px",
                       color: item?.type === "system" ? "#6B7280" : "",
                       wordBreak: "break-word",
                     }}
