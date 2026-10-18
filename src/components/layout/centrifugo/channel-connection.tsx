@@ -46,7 +46,7 @@ export default function ChannelConnection() {
           return;
         }
 
-        if (ctx?.data?.type === "message") {
+        if (ctx?.data?.type === "message" || ctx?.data?.type === "system") {
           dispatch({
             type: ACTIONS.USER_TYPING,
             payload: {
