@@ -16,6 +16,8 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import UpdatePassword from "./components/update-password";
+import { isSessionActive } from "./session-status";
+import { cn } from "~/lib/utils";
 
 function getPaginationRange(currentPage: number, totalPages: number) {
   const range = [];
@@ -96,22 +98,36 @@ const SecurityPage = () => {
             </TableHeader>
 
             <TableBody>
-              {logs.map((detail: any, index: number) => (
-                <TableRow
-                  key={index}
-                  className="text-xs md:text-sm text-[#344054]"
-                >
-                  <TableCell>{detail.device}</TableCell>
-                  <TableCell>{detail.location}</TableCell>
-                  <TableCell>
-                    {moment(detail.created_at).format("lll")}
-                  </TableCell>
-                  <TableCell>{moment(detail.login_at).format("lll")}</TableCell>
-                  <TableCell>
-                    {detail.is_live ? "Active" : "Not Active"}
-                  </TableCell>
-                </TableRow>
-              ))}
+              {logs.map((detail: any, index: number) => {
+                const active = isSessionActive(detail);
+                return (
+                  <TableRow
+                    key={index}
+                    className="text-xs md:text-sm text-[#344054]"
+                  >
+                    <TableCell>{detail.device}</TableCell>
+                    <TableCell>{detail.location}</TableCell>
+                    <TableCell>
+                      {moment(detail.created_at).format("lll")}
+                    </TableCell>
+                    <TableCell>
+                      {moment(detail.login_at).format("lll")}
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className={cn(
+                          "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
+                          active
+                            ? "bg-green-100 text-green-700"
+                            : "bg-gray-100 text-gray-600"
+                        )}
+                      >
+                        {active ? "Active" : "Expired"}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>
