@@ -41,6 +41,9 @@ const RenameFileModal: React.FC<RenameFileModalProps> = ({
 
   const handleRename = (data: RenameFileFormData) => {
     const newName = data.rename.trim();
+    if (!newName) {
+      return;
+    }
     if (newName === oldName) {
       onClose();
       return;
@@ -65,17 +68,21 @@ const RenameFileModal: React.FC<RenameFileModalProps> = ({
               className="px-6 mt-2 w-full"
             >
               <input
-                {...register("rename", { required: true })}
+                {...register("rename", {
+                  validate: (value) => value.trim().length > 0,
+                })}
                 type="text"
+                aria-invalid={errors.rename ? "true" : "false"}
                 className="w-[324px] border border-[#7141F8] outline-[#7141F8] px-3 py-2  rounded-lg"
               />
               {errors.rename && (
-                <span className="block text-red-500">
+                <span role="alert" className="block text-red-500">
                   Filename cannot be empty
                 </span>
               )}
               <div className="place-self-end mt-5 ">
                 <button
+                  type="button"
                   className="px-4 py-2 text-sm bg-transparent border border-[#D0D5DD] text-[#344054] rounded-lg mr-2"
                   onClick={onClose}
                 >
@@ -83,7 +90,7 @@ const RenameFileModal: React.FC<RenameFileModalProps> = ({
                 </button>
                 <input
                   type="submit"
-                  disabled={!watch("rename")}
+                  disabled={!watch("rename")?.trim()}
                   value="Rename"
                   className="disabled:opacity-50 px-4 py-2 text-sm bg-[#7141F8] text-white rounded-lg"
                 />
