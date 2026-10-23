@@ -123,6 +123,9 @@ export const useOrganisationUsers = (
   const [searchTotalItems, setSearchTotalItems] = useState(0);
   const searchPageRef = useRef(0);
   const searchInflightRef = useRef<Set<number>>(new Set());
+  // Bumped whenever the query, org or enabled state changes so responses that
+  // belong to a superseded search can be ignored instead of overwriting results
+  const searchGenerationRef = useRef(0);
 
   const orgMembersRef = useRef(state.orgMembers);
   const prevOrgIdRef = useRef(orgId);
@@ -209,6 +212,7 @@ export const useOrganisationUsers = (
       if (!orgId || !query.trim()) return;
       if (searchInflightRef.current.has(pageNumber)) return;
 
+      const generation = searchGenerationRef.current;
       searchInflightRef.current.add(pageNumber);
       setSearchLoading(true);
 
@@ -216,6 +220,9 @@ export const useOrganisationUsers = (
         const response = await GetRequest(
           buildUsersUrl(orgId, pageNumber, query)
         );
+
+        // A newer query/org superseded this request while it was in flight
+        if (generation !== searchGenerationRef.current) return;
 
         if (response?.status === 200 || response?.status === 201) {
           const newUsers = response?.data?.data || [];
@@ -240,8 +247,13 @@ export const useOrganisationUsers = (
           );
         }
       } finally {
-        searchInflightRef.current.delete(pageNumber);
-        setSearchLoading(false);
+        // Only the current generation may clear the in-flight marker and the
+        // loader; a stale response must not unlock a newer request for the
+        // same page or hide its loading state
+        if (generation === searchGenerationRef.current) {
+          searchInflightRef.current.delete(pageNumber);
+          setSearchLoading(false);
+        }
       }
     },
     [orgId]
@@ -277,9 +289,15 @@ export const useOrganisationUsers = (
 
   // Search mode: refetch when debounced query changes
   useEffect(() => {
-    if (!enabled || !orgId) return;
+    searchGenerationRef.current += 1;
+
+    if (!enabled || !orgId) {
+      setSearchLoading(false);
+      return;
+    }
 
     if (!isSearching) {
+      setSearchLoading(false);
       setSearchUsers([]);
       setSearchHasMore(false);
       setSearchTotalItems(0);
