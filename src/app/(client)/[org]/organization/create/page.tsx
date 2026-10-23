@@ -67,7 +67,6 @@ const CreateOrganization: React.FC = () => {
     const payload = {
       name: values.organisationName,
       type: values.organisationType,
-      email: "email@email.com",
       country: country?.value,
     };
 
