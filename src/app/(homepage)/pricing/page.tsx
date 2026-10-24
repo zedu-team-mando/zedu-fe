@@ -10,6 +10,7 @@ import {
   pricingComparisonPlans,
 } from "../_lib/pricingComparisonData";
 import { CircleHelp } from "lucide-react";
+import { getPricingStructuredData } from "../_lib/pricingStructuredData";
 
 export const metadata: Metadata = {
   title: "Pricing",
@@ -58,8 +59,17 @@ export const metadata: Metadata = {
 };
 
 const PricingPage = () => {
+  const structuredData = JSON.stringify(getPricingStructuredData()).replace(
+    /</g,
+    "\\u003c"
+  );
+
   return (
     <div className="space-y-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: structuredData }}
+      />
       <PricingSection showSubtitle />
 
       <div
